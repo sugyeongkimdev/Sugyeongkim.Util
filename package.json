@@ -1,9 +1,9 @@
 {
-	"name" : "com.sugyeongkim.bigutil",
-    "displayName": "Sugyeongkim BigUtil",
+	"name" : "com.sugyeongkim.bigutil.unity",
+    "displayName": "Sugyeongkim BigUtil Unity",
     "author": { "name": "SugyeongKim", "url": "https://github.com/sugyeongkimdev" },
     "version": "1.0.0",
-    "description": "https://github.com/sugyeongkimdev/Unity-Utility",
+    "description": "https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.Unity",
     "license": "MIT",
     "dependencies": {}
 }
