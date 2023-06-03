@@ -1,5 +1,3 @@
-
-
 # This is submodule git
 
 ### Root git : https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil  
