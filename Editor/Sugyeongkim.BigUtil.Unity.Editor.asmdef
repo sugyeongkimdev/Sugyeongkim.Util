@@ -1,5 +1,5 @@
 {
-    "name": "Sugyeongkim.BigUtil.Editor",
+    "name": "Sugyeongkim.BigUtil.Unity.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:339e4191950582d4e830bca005dd3311"
