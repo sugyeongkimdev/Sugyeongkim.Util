@@ -83,7 +83,7 @@ namespace BigUtil
     // 싱글톤 유틸 클래스
     static class SingletonUtil
     {
-        private const string INSTANCE_NAME = "instance";
+        private const string INSTANCE_PROP_NAME = "instance";
         private const string ROOT_NAME = "Global_Singleton";
 
         //==========================================================//
@@ -121,28 +121,28 @@ namespace BigUtil
         {
             if (isInit == false)
             {
-                isInit = true;
                 InitSingletonAsObservable ()
                     .Subscribe (_ => initCallback?.Invoke ())
                     .AddTo (RootTrnas);
+                isInit = true;
             }
         }
 
-        // unirx 초기화 진행
+        // 초기화 진행 (unirx)
         public static IObservable<Unit> InitSingletonAsObservable ()
         {
             if (isInit == false)
             {
-                isInit = true;
-
                 // 초기화 및 비동기 초기화 대기
-                var a = GetGlobalSingletonInstnaceArr ()
+                var initConcat = GetGlobalSingletonInstnaceArr ()
                     .Cast<ISingletonInit> ()
                     .OrderBy (target => target.InitOrder)
                     .Select (target => target.InitAsObservable ().DoOnSubscribe (() => target.Init ()))
                     .Concat ();
 
-                return Observable.WhenAll (a);
+                isInit = true;
+                return Observable.WhenAll (initConcat)
+                    .TakeUntilDestroy (RootTrnas);
             }
 
             return Observable.Empty<Unit> ();
@@ -161,7 +161,7 @@ namespace BigUtil
                     // 싱글톤 제네릭 타입 생성
                     var currentSingleton = singletonType.MakeGenericType (currentType);
                     // 싱글톤 인스턴스 접근 및 생성
-                    var instance = currentSingleton.GetProperty (INSTANCE_NAME).GetValue (null);
+                    var instance = currentSingleton.GetProperty (INSTANCE_PROP_NAME).GetValue (null);
                     return instance;
                 }).ToArray ();
 
