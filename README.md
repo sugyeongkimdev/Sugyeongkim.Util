@@ -72,3 +72,9 @@ UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 �
 
 ![Input](https://user-images.githubusercontent.com/51020780/132979324-5b4ee554-b138-4cb7-8134-53d9e3d5ce79.PNG)
 ![InputGIF](https://user-images.githubusercontent.com/51020780/132979325-f5a18fa2-ccd8-4ef2-8517-bce11e0bf177.gif)
+
+
+---
+
+### UniRx_AnimationEventSubject.cs
+해당 script를 부착한 unity animation은 UniRx의 Subject로 이벤트를 등록하여서 결합하기 쉬워짐
