@@ -55,13 +55,13 @@ UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 �
 
 ### Singleton.cs
 통합 싱글톤 코드 작성, 자세한 내용은 코드 및 스크린샷 참조
-1. GlobalSingleton을 상속받으면 위치불문하고 검색 및 instance를 생성하며 초기화와 async초기화를 지원함.
-   매니저급 클래스에서 사용하면 됨
-2. SimpleSingleton를 상속받으면 평범한 싱글톤 기능을 하지만 instance를 찾기만 하며 생명주기는 Scene에 한정됨.
+1. 초기화와 UniRx 초기화를 지원함
+1. GlobalSingleton을 상속받으면 위치불문하고 검색 및 instance를 생성, 매니저급 클래스에서 사용하면 됨
+2. LocalSingleton를 상속받으면 평범한 싱글톤 기능을 하지만 instance를 찾기만 하며 생명주기는 Scene에 한정됨.
 
-![A](https://user-images.githubusercontent.com/51020780/132859707-a45395ec-7e3e-454d-8e8a-3616d6f354b5.PNG)
-![B](https://user-images.githubusercontent.com/51020780/132859711-78b42159-3412-4d8b-beac-81537ce62629.PNG)
-![D](https://user-images.githubusercontent.com/51020780/132859713-5c0371b3-610f-4f04-9337-10d7cd84185c.PNG)
+![singleton0](https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.Unity/assets/51020780/07beb0de-671d-4707-8cfb-22576185ef17)
+![singleton1](https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.Unity/assets/51020780/d3c320e0-944f-4c0d-81c2-554fe9720709)
+![singleton2](https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.Unity/assets/51020780/6e4e6ed4-08f9-4cdc-b480-9d5a61e8f8af)
 
 #
 
