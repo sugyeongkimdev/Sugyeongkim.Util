@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 
 namespace BigUtil
 {
     // 간단한 싱글톤, 찾기만함
-    public abstract class LocalSingleton<T> : MonoBehaviour where T : Component
+    public abstract class LocalSingleton<T> : MonoBehaviour, SingletonUtil.ISingletonInit where T : Component
     {
         protected static T _instance;
         public static T instance
@@ -20,7 +20,7 @@ namespace BigUtil
 
         protected static T FindCachedInstance ()
         {
-            if (!IsValid ())
+            if (IsValid () == false)
             {
                 _instance = FindObjectOfType<T> ();
             }
@@ -29,7 +29,18 @@ namespace BigUtil
 
         private static bool IsValid ()
         {
-            return _instance && !ReferenceEquals (_instance, null);
+            return _instance && ReferenceEquals (_instance, null) == false;
+        }
+
+
+        //==========================================================//
+
+        // 싱글톤 초기화
+        public virtual int InitOrder => 0;
+        public virtual void Init () { }
+        public virtual IObservable<Unit> InitAsObservable ()
+        {
+            return Observable.Empty<Unit> ();
         }
 
         //==========================================================//
@@ -48,7 +59,7 @@ namespace BigUtil
     //==========================================================//
 
     // 게임 전역에서 사용되는 싱글톤, 찾고 없으면 만들어서 제공
-    public abstract class GlobalSingleton<T> : LocalSingleton<T>, SingletonUtil.IInit where T : Component
+    public abstract class GlobalSingleton<T> : LocalSingleton<T> where T : Component
     {
         public new static T instance
         {
@@ -57,23 +68,12 @@ namespace BigUtil
                 if (!FindCachedInstance ())
                 {
                     var singleton = new GameObject ($"{typeof (T)}");
-                    singleton.transform.SetParent (SingletonUtil.ParentTrnas);
+                    singleton.transform.SetParent (SingletonUtil.RootTrnas);
                     _instance = singleton.AddComponent<T> ();
                 }
 
                 return FindCachedInstance ();
             }
-        }
-
-        //==========================================================//
-
-        // 전역 싱글톤 초기화 virtual 지원
-        public virtual void Init () { }
-        public virtual async Task InitAsync ()
-        {
-            // 게임 시작시 한번만 호출하면서 완료까지 대기하므로
-            // 상식적으로 무식하게 큰 작업을 걸거나 Delay 걸면 안됨
-            await Task.CompletedTask;
         }
     }
 
@@ -81,78 +81,71 @@ namespace BigUtil
     //==========================================================//
 
     // 싱글톤 유틸 클래스
-    public static class SingletonUtil
+    static class SingletonUtil
     {
+        private const string INSTANCE_NAME = "instance";
+        private const string ROOT_NAME = "Global_Singleton";
+
         //==========================================================//
 
-        // 싱글톤 초기화 지원 인터페이스
-        public interface IInit
+        // 싱글톤 초기화 인터페이스
+        public interface ISingletonInit
         {
+            int InitOrder => 0;
             void Init ();
-            Task InitAsync ();
+            IObservable<Unit> InitAsObservable ();
         }
 
         //==========================================================//
 
-        // 리플렉션에서 사용되는 이름들
-        private const string InstanceName = "instance";
-
         // 싱글톤의 부모 트랜스폼
-        private static GameObject _parentTrnas;
-        public static Transform ParentTrnas
+        private static GameObject _rootTrnas;
+        public static Transform RootTrnas
         {
             get
             {
-                if (!_parentTrnas)
+                if (_rootTrnas == false)
                 {
-                    _parentTrnas = new GameObject ($"__Global_Singleton__");
-                    MonoBehaviour.DontDestroyOnLoad (_parentTrnas);
+                    _rootTrnas = new GameObject (ROOT_NAME);
+                    MonoBehaviour.DontDestroyOnLoad (RootTrnas);
                 }
-
-                return _parentTrnas.transform;
+                return _rootTrnas.transform;
             }
         }
 
         //==========================================================//
 
         // 초기화 진행
-        private static bool isInit = false;         // 초기화 여부
-        private static bool isRunning = false;      // 초기화 진행 여부
-        public static void SingletonInit (Action initDoneCallback)
+        private static bool isInit = false;
+        public static void InitSingleton (Action initCallback = null)
         {
-            if (!isInit)
+            if (isInit == false)
             {
                 isInit = true;
-                isRunning = true;
-
-                // 한번만 초기화 진행
-                SingletonInitAsync (initDoneCallback);
-            }
-            else
-            {
-                // 이미 초기화를 했으면 바로 callback처리하고 진행중이면 무시
-                if (!isRunning)
-                {
-                    initDoneCallback?.Invoke ();
-                }
+                InitSingletonAsObservable ()
+                    .Subscribe (_ => initCallback?.Invoke ())
+                    .AddTo(RootTrnas);
             }
         }
 
-        // 비동기 초기화 진행
-        private static async void SingletonInitAsync (Action initDoneCallback)
+        // unirx 초기화 진행
+        public static IObservable<Unit> InitSingletonAsObservable ()
         {
-            //// 초기화 및 비동기 초기화 대기
-            await Task.WhenAll (GetGlobalSingletonInstnaceArr ()
-                    // 초기화를 위한 IInit 캐스팅
-                    .Cast<IInit> ()
-                    .Select (init =>
-                    {
-                        init.Init ();
-                        return init.InitAsync ();
-                    }));
-            // 초기화 종료 콜백
-            isRunning = false;
-            initDoneCallback?.Invoke ();
+            if (isInit == false)
+            {
+                isInit = true;
+
+                // 초기화 및 비동기 초기화 대기
+                var a = GetGlobalSingletonInstnaceArr ()
+                    .Cast<ISingletonInit> ()
+                    .OrderBy (target => target.InitOrder)
+                    .Select (target => target.InitAsObservable ().DoOnSubscribe (() => target.Init ()))
+                    .Concat();
+
+                return Observable.WhenAll (a);
+            }
+
+            return Observable.Empty<Unit> ();
         }
 
         //==========================================================//
@@ -168,7 +161,7 @@ namespace BigUtil
                     // 싱글톤 제네릭 타입 생성
                     var currentSingleton = singletonType.MakeGenericType (currentType);
                     // 싱글톤 인스턴스 접근 및 생성
-                    var instance = currentSingleton.GetProperty (InstanceName).GetValue (null);
+                    var instance = currentSingleton.GetProperty (INSTANCE_NAME).GetValue (null);
                     return instance;
                 }).ToArray ();
 
@@ -204,6 +197,5 @@ namespace BigUtil
 
             return findType.ToArray ();
         }
-
     }
 }
