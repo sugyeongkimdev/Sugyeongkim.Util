@@ -7,7 +7,7 @@ using UnityEngine;
 namespace BigUtil
 {
     // 간단한 싱글톤, 찾기만함
-    public abstract class SimpleSingleton<T> : MonoBehaviour where T : Component
+    public abstract class LocalSingleton<T> : MonoBehaviour where T : Component
     {
         protected static T _instance;
         public static T instance
@@ -48,7 +48,7 @@ namespace BigUtil
     //==========================================================//
 
     // 게임 전역에서 사용되는 싱글톤, 찾고 없으면 만들어서 제공
-    public abstract class GlobalSingleton<T> : SimpleSingleton<T>, SingletonUtil.IInit where T : Component
+    public abstract class GlobalSingleton<T> : LocalSingleton<T>, SingletonUtil.IInit where T : Component
     {
         public new static T instance
         {
