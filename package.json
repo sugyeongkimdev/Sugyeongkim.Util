@@ -1,5 +1,5 @@
 {
-	"name" : "com.sugyeongkim.bigutil.unity",
+    "name" : "com.sugyeongkim.bigutil.unity",
     "displayName": "Sugyeongkim BigUtil Unity",
     "author": { "name": "SugyeongKim", "url": "https://github.com/sugyeongkimdev" },
     "version": "1.0.0",
