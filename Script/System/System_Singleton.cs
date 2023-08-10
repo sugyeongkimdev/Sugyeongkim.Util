@@ -124,7 +124,7 @@ namespace BigUtil
                 isInit = true;
                 InitSingletonAsObservable ()
                     .Subscribe (_ => initCallback?.Invoke ())
-                    .AddTo(RootTrnas);
+                    .AddTo (RootTrnas);
             }
         }
 
@@ -140,7 +140,7 @@ namespace BigUtil
                     .Cast<ISingletonInit> ()
                     .OrderBy (target => target.InitOrder)
                     .Select (target => target.InitAsObservable ().DoOnSubscribe (() => target.Init ()))
-                    .Concat();
+                    .Concat ();
 
                 return Observable.WhenAll (a);
             }
