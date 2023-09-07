@@ -71,7 +71,7 @@ namespace BigUtil
         public virtual void Init () { }
         public virtual IObservable<Unit> InitAsObservable ()
         {
-            return Observable.Empty<Unit> ();
+            return Observable.ReturnUnit ();
         }
     }
 
@@ -118,22 +118,14 @@ namespace BigUtil
 
         // 초기화 진행
         private static bool isInit = false;
-        public static void InitSingleton (Action initCallback = null)
-        {
-            if (isInit == false)
-            {
-                InitSingletonAsObservable ()
-                    .Subscribe (_ => initCallback?.Invoke ())
-                    .AddTo (RootTrnas);
-                isInit = true;
-            }
-        }
 
         // 초기화 진행 (unirx)
         public static IObservable<Unit> InitSingletonAsObservable ()
         {
             if (isInit == false)
             {
+                isInit = true;
+
                 // 초기화 및 비동기 초기화 대기
                 var initConcat = GetGlobalSingletonInstnaceArr ()
                     .Cast<ISingletonInit> ()
@@ -141,12 +133,11 @@ namespace BigUtil
                     .Select (target => target.InitAsObservable ().DoOnSubscribe (() => target.Init ()))
                     .Concat ();
 
-                isInit = true;
                 return Observable.WhenAll (initConcat)
                     .TakeUntilDestroy (RootTrnas);
             }
 
-            return Observable.Empty<Unit> ();
+            return Observable.ReturnUnit ();
         }
 
         //==========================================================//
