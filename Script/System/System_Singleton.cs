@@ -3,7 +3,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     // 간단한 싱글톤, 찾기만함
     public abstract class LocalSingleton<T> : MonoBehaviour where T : Component

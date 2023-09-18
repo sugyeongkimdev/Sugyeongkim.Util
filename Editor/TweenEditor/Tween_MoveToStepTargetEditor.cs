@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     [CustomEditor (typeof (Tween_MoveToStepTarget))]
     public class Tween_MoveToStepTargetEditor : Editor

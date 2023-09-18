@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     // Editor/VFX_MoveToStepTargetEditor.cs 필요
     // 각 스탭을 지정해서 애니메이션 기능을 실행하는 컴포넌트

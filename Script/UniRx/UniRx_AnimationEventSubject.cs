@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using UniRx;
 using UnityEngine;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     // UniRx를 이용한 유니티 애니메이션 이벤트 등록
     // 해당 컴포넌트를 부착한 뒤 애니메이션에서 OnAnimationEvent(string key)를 이용하여

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     public static class System_Extension
     {

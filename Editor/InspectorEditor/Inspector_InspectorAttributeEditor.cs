@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     // 들여쓰기 어트리뷰트 에디터
     [CustomPropertyDrawer (typeof (IndentAttribute))]

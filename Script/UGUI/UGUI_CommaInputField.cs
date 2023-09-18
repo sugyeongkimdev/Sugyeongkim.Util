@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BigUtil
+namespace SugyeongKim.Unity
 {
     // UGUI의 InputField에 ,를 붙이는 최소한의 코드
     // 사용시 자체적으로 커스텀 바람
