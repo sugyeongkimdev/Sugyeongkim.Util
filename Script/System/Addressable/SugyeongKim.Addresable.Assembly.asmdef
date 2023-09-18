@@ -1,8 +1,8 @@
 {
-    "name": "NewAssembly",
+    "name": "SugyeongKim.Addresable.Assembly",
     "rootNamespace": "",
     "references": [
-        "Sugyeongkim.BigUtil.Unity",
+        "SugyeongKim.Unity.Assembly",
         "UniRx",
         "UniTask",
         "UniTask.Addressables",

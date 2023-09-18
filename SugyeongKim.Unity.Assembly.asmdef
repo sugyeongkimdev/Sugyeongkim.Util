@@ -1,13 +1,10 @@
 {
-    "name": "Sugyeongkim.BigUtil.Unity.Editor",
+    "name": "SugyeongKim.Unity.Assembly",
     "rootNamespace": "",
     "references": [
-        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
-        "GUID:339e4191950582d4e830bca005dd3311"
+        "UniRx"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
