@@ -6,12 +6,12 @@ using UnityEngine;
 // 호출자 정보 추적 특성을 이용한 로그 시스템
 namespace SugyeongKim.Unity
 {
-    public static class Log
+    public static class Console
     {
         //==========================================================//
 
         // Conditional ("UNITY_EDITOR")]
-        public static void Str (object logStr = default,
+        public static void Log (object logStr = default,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
