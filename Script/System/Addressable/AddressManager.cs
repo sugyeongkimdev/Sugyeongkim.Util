@@ -12,7 +12,7 @@ using Cysharp.Threading.Tasks;
 
 // https://planek.tistory.com/30
 
-public class AddressResource : GlobalSingleton<AddressResource>
+public class AddressManager : GlobalSingleton<AddressManager>
 {
     // <path, load asset>, 로드된 에셋
     private static Dictionary<string, object> cachedLoadAssetDic;

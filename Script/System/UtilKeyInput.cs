@@ -8,7 +8,7 @@ namespace SugyeongKim.Unity
 {
     // 키 입력에 대한 액션
 
-    public class System_KeyInput : MonoBehaviour
+    public class UtilKeyInput : MonoBehaviour
     {
         // key group
         public class KeyGroup : Dictionary<KeyCode, Action>

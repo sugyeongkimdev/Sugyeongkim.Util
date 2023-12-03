@@ -1,6 +1,6 @@
 namespace SugyeongKim.Unity
 {
-    public class System_Math
+    public class UtilMath
     {
         //============================================//
 

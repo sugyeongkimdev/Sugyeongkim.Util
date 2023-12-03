@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SugyeongKim.Unity
 {
-    public static class System_Extension
+    public static class UtilExtension
     {
         // ex) (new int[0]).ForEach ((c, i) => { /*function*/ });
         public static void ForEach<T> (this IEnumerable<T> enumerable, Action<T> loop)
