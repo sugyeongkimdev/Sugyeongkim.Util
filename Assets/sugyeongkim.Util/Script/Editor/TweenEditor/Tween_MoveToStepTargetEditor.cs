@@ -4,19 +4,19 @@ using UnityEngine;
 
 namespace SugyeongKim.Util
 {
-    [CustomEditor (typeof (Tween_MoveToStepTarget))]
+    [CustomEditor (typeof (MoveToStepTarget))]
     public class Tween_MoveToStepTargetEditor : Editor
     {
         public void OnSceneGUI ()
         {
-            var anim = target as Tween_MoveToStepTarget;
+            var anim = target as MoveToStepTarget;
             if (!anim || !anim.target)
             {
                 return;
             }
             if (IsEditable ())
             {
-                Undo.RecordObject (anim, nameof (Tween_MoveToStepTarget));
+                Undo.RecordObject (anim, nameof (MoveToStepTarget));
             }
 
             // key값의 길이가 안맞을 경우 초기화

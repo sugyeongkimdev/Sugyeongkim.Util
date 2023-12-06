@@ -4,7 +4,7 @@ namespace SugyeongKim.Util
 {
     // 이 스크립트가 달린 오브젝트는 타겟을 향해 설정된 애니메이션을 실행
 
-    public class Tween_MoveToTarget : MonoBehaviour
+    public class MoveToTarget : MonoBehaviour
     {
         //============================================================//
 

@@ -6,7 +6,7 @@ namespace SugyeongKim.Util
     // 각 스탭을 지정해서 애니메이션 기능을 실행하는 컴포넌트
     // 의도한만큼 기능이 안나와서 생각보다 구림
 
-    public class Tween_MoveToStepTarget : Tween_MoveToTarget
+    public class MoveToStepTarget : MoveToTarget
     {
         [Header ("Animation Step")]
         public AnimationCurve xCurve = AnimationCurve.Linear (0, 0, 1f, 1f);

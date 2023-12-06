@@ -11,7 +11,7 @@ namespace SugyeongKim.Util
     // 애니메이션 string 이벤트를 실행하면 Add를 통해 등록한 액션을 실행하는 코드
     // 즉 애니메이션에 subject를 반환해서 Subscribe 구독이 가능함
 
-    public class UniRx_AnimationEventSubject : MonoBehaviour
+    public class AnimationEventSubject : MonoBehaviour
     {
         // 사용 예시
         // thisComp.Add("ani_Key").Subscribe(_=>{  });
