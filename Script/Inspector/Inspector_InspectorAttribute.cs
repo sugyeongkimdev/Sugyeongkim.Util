@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     // Editor/InspectorAttributeEditor.cs 필요함
 

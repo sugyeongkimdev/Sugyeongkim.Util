@@ -3,7 +3,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     // 간단한 싱글톤, 찾기만함
     public abstract class LocalSingleton<T> : MonoBehaviour where T : Component
@@ -185,7 +185,7 @@ namespace SugyeongKim.Unity
                     }
                     return false;
                 })
-                .ToArray();
+                .ToArray ();
 
             return findTypeArr;
         }

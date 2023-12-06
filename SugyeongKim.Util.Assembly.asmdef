@@ -1,8 +1,7 @@
 {
-    "name": "SugyeongKim.Addresable.Assembly",
+    "name": "SugyeongKim.Util.Assembly",
     "rootNamespace": "",
     "references": [
-        "SugyeongKim.Unity.Assembly",
         "UniRx",
         "UniTask",
         "UniTask.Addressables",
@@ -12,7 +11,7 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],

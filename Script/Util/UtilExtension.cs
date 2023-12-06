@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     public static class UtilExtension
     {

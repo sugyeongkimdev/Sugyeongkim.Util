@@ -1,4 +1,4 @@
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     public class UtilMath
     {

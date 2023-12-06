@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 // 호출자 정보 추적 특성을 이용한 로그 시스템
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     public static class UtilLog
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace SugyeongKim.Unity
+namespace SugyeongKim.Util
 {
     // 키 입력에 대한 액션
 
