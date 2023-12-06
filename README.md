@@ -1,6 +1,35 @@
-# This is submodule git
 
-### Root git : https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil  
+## 필수
+> + [UniRx](https://github.com/neuecc/UniRx)   
+>   + [ump(package)](https://github.com/neuecc/UniRx#upm-package) - `https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts`
+
+
+## Submodule(subtree) git
+
+Unity util git path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git 
+
+Git asset path : Assets/Sugyeongkim.Util
+
+<hr/>
+
+![Sourcetree1](https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil/assets/51020780/e79db6c4-dbc9-4828-bc84-6ec0fd8c4bbd)  
+
+#### 프로젝트에 빠르게 추가하기
+
+Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git  
+or
+~~Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.git?path=Assets/Sugyeongkim.BigUtil.Unity~~
+
+---
+---
+
+# 패키지에서 제외됨
+### UtilNGUI.cs
+NUGI 유틸 코드 모음집
+1. 여러개의 UIToggle에 이벤트 등록할 때 지정된 값을 등록 및 초기화 지정
+2. UISprite, UILabel에 Gray Color 효과
+
+--
 
 ---
 
