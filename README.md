@@ -8,7 +8,7 @@
 
 Unity util git path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git 
 
-Git asset path : Assets/Sugyeongkim.Util
+Git asset path : Assets/sugyeongkim.Util
 
 <hr/>
 
@@ -17,23 +17,36 @@ Git asset path : Assets/Sugyeongkim.Util
 #### 프로젝트에 빠르게 추가하기
 
 Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git  
+
 or
-~~Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil.git?path=Assets/Sugyeongkim.BigUtil.Unity~~
+
+Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git?path=Assets/Sugyeongkim.Util  
 
 ---
 ---
 
 # 패키지에서 제외됨
-### UtilNGUI.cs
+#### UtilNGUI.cs
 NUGI 유틸 코드 모음집
 1. 여러개의 UIToggle에 이벤트 등록할 때 지정된 값을 등록 및 초기화 지정
 2. UISprite, UILabel에 Gray Color 효과
 
---
-
+---
 ---
 
-### VFX_MoveToTarget.cs
+### [UGUI]
+
+#### UtilCommaInputField.cs
+UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 최소량의 코드
+
+![UGUI_CommaInputField](https://user-images.githubusercontent.com/51020780/132855694-d845241f-8a02-443c-9b48-b4890c5a9d45.gif)
+
+---
+---
+
+### [Tween]
+
+#### MoveToTarget.cs
 해당 script를 부착한 GameObject는 지정돤 타겟을 향해 설정된 값을 사용하여 이동함
 
 ![A1](https://user-images.githubusercontent.com/51020780/132530113-cd4a0359-dab2-44af-945e-fdc83552b10f.PNG)
@@ -42,30 +55,33 @@ NUGI 유틸 코드 모음집
 
 #
 
-### VFX_MoveToStepTarget.cs
-VFX_MoveToTarget.cs를 상속받아서 작성된 경로 애니메이션 코드
+#### MoveToStepTarget.cs
+MoveToTarget.cs를 상속받아서 작성된 경로 애니메이션 코드
 
 ![VFX_MoveToStepTargetInspector](https://user-images.githubusercontent.com/51020780/133119919-bdb47d3f-f0b0-4271-84a6-064a4637bf08.PNG)
 ![VFX_MoveToStepTarget1](https://user-images.githubusercontent.com/51020780/133119908-1d5633a5-8e8a-4145-8d83-f6a818a23eee.gif)
 ![VFX_MoveToStepTarget2](https://user-images.githubusercontent.com/51020780/133119913-5b73fa93-f577-4d1e-9389-d2079096e001.gif)
 ![VFX_MoveToStepTarget3](https://user-images.githubusercontent.com/51020780/133119914-7f65cf2b-bfd9-4d2a-9ca5-f423459a73d3.gif)
 
-#
+---
+---
 
-### Console.cs
-Debug.Log / Debug.Error 간편한 확장법
+### [Util]
 
+#### UtilLog.cs
+Debug.Log / Debug.Error
+색상 및 호출자 로그
 ![console](https://user-images.githubusercontent.com/51020780/132694076-70d4d95c-8dae-4b76-b496-e9b8d069f4c1.PNG)
 
 #
 
-### ScriptExtension.cs
+#### ScriptExtension.cs
 코드 편의성 확장 모음집
 1. IEnumerable을 상속받는 모든 열거자에대한 반복문 (Linq.ForEach는 List만 지원함)
 
 #
 
-### InspectorAttribute.cs
+#### InspectorAttribute.cs
 Inspector 간단 확장 에디터  
 나중에 손좀 봐야함
 
@@ -73,16 +89,7 @@ Inspector 간단 확장 에디터
 
 #
 
-### [UGUI 유틸](Script/UGUI)
-
-### UGUI_CommaInputField.cs
-UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 최소량의 코드
-
-![UGUI_CommaInputField](https://user-images.githubusercontent.com/51020780/132855694-d845241f-8a02-443c-9b48-b4890c5a9d45.gif)
-
-#
-
-### Singleton.cs
+#### UtilSingleton.cs
 통합 싱글톤 코드 작성, 자세한 내용은 코드 및 스크린샷 참조
 1. 초기화와 UniRx 초기화를 지원함
 1. GlobalSingleton을 상속받으면 위치불문하고 검색 및 instance를 생성, 매니저급 클래스에서 사용하면 됨
@@ -94,7 +101,7 @@ UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 �
 
 #
 
-### KeyInput.cs
+#### UtilKeyInput.cs
 
 아주 간단한 키 입력 이벤트 등록 (동시 입력 가능)  
 관리자로 쓸거면 싱글톤으로 만들어서 쓰거나, Linq가 싫거나 성능이 중요하면 Loop부분을 입맛대로 수정하면 됨
@@ -102,8 +109,10 @@ UGUI의 InputField에 숫자 입력완료시 단위마다 ","를 붙여주는 �
 ![Input](https://user-images.githubusercontent.com/51020780/132979324-5b4ee554-b138-4cb7-8134-53d9e3d5ce79.PNG)
 ![InputGIF](https://user-images.githubusercontent.com/51020780/132979325-f5a18fa2-ccd8-4ef2-8517-bce11e0bf177.gif)
 
-
+---
 ---
 
-### UniRx_AnimationEventSubject.cs
+### [UniRx 유틸]
+
+#### AnimationEventSubject.cs
 해당 script를 부착한 unity animation은 UniRx의 Subject로 이벤트를 등록하여서 결합하기 쉬워짐
