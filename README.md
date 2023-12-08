@@ -29,6 +29,11 @@
 ![git url add1](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/20f483a5-52dd-4e01-aee9-3967fc70df84)  
 ![git url add2](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/f8cc1ff5-3306-42a6-b1ad-f2b808c3b965)  
 
+Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git  
+
+or
+
+Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git?path=Assets/Sugyeongkim.Util  
 
 ---
 ---

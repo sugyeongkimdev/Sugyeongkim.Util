@@ -5,87 +5,14 @@ using UnityEngine;
 
 namespace SugyeongKim.Util
 {
-    // 간단한 싱글톤, 찾기만함
-    public abstract class LocalSingleton<T> : MonoBehaviour where T : Component
-    {
-        protected static T _instance;
-        public static T instance
-        {
-            get
-            {
-                return FindCachedInstance ();
-            }
-        }
-
-        protected static T FindCachedInstance ()
-        {
-            if (IsValid () == false)
-            {
-                _instance = FindObjectOfType<T> ();
-            }
-            return _instance;
-        }
-
-        private static bool IsValid ()
-        {
-            return _instance && ReferenceEquals (_instance, null) == false;
-        }
-
-        //==========================================================//
-
-        public virtual void Awake ()
-        {
-            _instance = IsValid () ? _instance : transform as T;
-        }
-
-        public virtual void OnDestroy ()
-        {
-            _instance = null;
-        }
-    }
-
-    //==========================================================//
-
-    // 게임 전역에서 사용되는 싱글톤, 찾고 없으면 만들어서 제공
-    public abstract class GlobalSingleton<T> : LocalSingleton<T>, SingletonUtil.ISingletonInit where T : Component
-    {
-        public new static T instance
-        {
-            get
-            {
-                if (!FindCachedInstance ())
-                {
-                    var singleton = new GameObject ($"{typeof (T)}");
-                    singleton.transform.SetParent (SingletonUtil.RootTrnas);
-                    _instance = singleton.AddComponent<T> ();
-                }
-
-                return FindCachedInstance ();
-            }
-        }
-
-        //==========================================================//
-
-        // 싱글톤 초기화
-        public virtual int InitOrder => 0;
-        public virtual void Init () { }
-        public virtual IObservable<Unit> InitAsObservable ()
-        {
-            return Observable.ReturnUnit ();
-        }
-    }
-
-    //==========================================================//
-    //==========================================================//
-
     // 싱글톤 유틸 클래스
-    public static class SingletonUtil
+    public static class SingletonTool
     {
         private const string INSTANCE_PROP_NAME = "instance";
-        private const string ROOT_NAME = "Global_Singleton";
+        private const string ROOT_NAME = "__GlobalSingleton__";
 
-        //private static Type LocalType = typeof (LocalSingleton<>);
         private static Type GlobalType = typeof (GlobalSingleton<>);
+        //private static Type LocalType = typeof (LocalSingleton<>);
 
         //==========================================================//
 
@@ -107,8 +34,16 @@ namespace SugyeongKim.Util
             {
                 if (_rootTrnas == false)
                 {
-                    _rootTrnas = new GameObject (ROOT_NAME);
-                    MonoBehaviour.DontDestroyOnLoad (RootTrnas);
+                    var parent = GameObject.FindObjectOfType<SingletonParent> ();
+                    if (parent)
+                    {
+                        _rootTrnas = parent.gameObject;
+                    }
+                    else
+                    {
+                        _rootTrnas = new GameObject (ROOT_NAME);
+                    }
+                    MonoBehaviour.DontDestroyOnLoad (_rootTrnas);
                 }
                 return _rootTrnas.transform;
             }

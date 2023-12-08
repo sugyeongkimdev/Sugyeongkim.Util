@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
-
 #if USE_ADDESSABLE
 using UnityEngine.AddressableAssets;
 using UniRx.Triggers;
@@ -35,14 +34,14 @@ namespace SugyeongKim.Util
                     loadRuntimeObservableDic = new ();
                 });
 #else
-        return Observable.ReturnUnit ();
+            return Observable.ReturnUnit ();
 #endif
         }
 
         //============================================//
 
-        // load
-        public static IObservable<T> LoadAsObservable<T> (string key, GameObject onDestroy)
+        // key(or path)로 에셋 로드
+        public static IObservable<T> LoadAssetAsObservable<T> (string key, GameObject onDestroy = null)
         {
 #if USE_ADDESSABLE
             if (cachedLoadAssetDic.TryGetValue (key, out object cachedAsset) && cachedAsset != null)
@@ -67,57 +66,82 @@ namespace SugyeongKim.Util
                         })
                         .Do (loadAsset =>
                         {
-                            onDestroy.OnDestroyAsObservable ()
-                                .Subscribe (_ => UnloadAsObservable (loadAsset))
-                                .AddTo (onDestroy);
+                            if (onDestroy)
+                            {
+                                onDestroy.OnDestroyAsObservable ()
+                                    .Subscribe (_ => UnloadAssetAsObservable (loadAsset))
+                                    .AddTo (onDestroy);
+                            }
                         });
                     // 로드 이벤트 저장 및 반환
-                    loadRuntimeObservableDic.Add (key, loadObservable.Cast<T, object> ());
+                    loadRuntimeObservableDic.TryAdd (key, loadObservable.Cast<T, object> ());
                     return loadObservable;
                 }
             }
 #else
-        return Observable.Return<T> (default);
+            return Observable.Return<T> (default);
 #endif
         }
-        public static IObservable<T> LoadAsObservable<T> (string key, Component onDestroy)
+        public static IObservable<T> LoadAssetAsObservable<T> (string key, Component onDestroy = null)
         {
 #if USE_ADDESSABLE
-            return LoadAsObservable<T> (key, onDestroy.gameObject);
+            return LoadAssetAsObservable<T> (key, onDestroy.gameObject);
 #else
-        return Observable.Return<T> (default);
+            return Observable.Return<T> (default);
 #endif
         }
 
-        // unload
-        public static void UnloadAsObservable (object unloadAsset)
+        // 로드된 에셋 해제
+        public static void UnloadAssetAsObservable (object unloadAsset)
         {
 #if USE_ADDESSABLE
             Addressables.Release (unloadAsset);
 #endif
         }
-        public static void UnloadAsObservable (string unloadAssetKey)
+        // 로드된 에셋 key로 해제
+        public static void UnloadAssetAsObservable (string unloadAssetKey)
         {
 #if USE_ADDESSABLE
             if (cachedLoadAssetDic.TryGetValue (unloadAssetKey, out object unloadAsset))
             {
                 Addressables.Release (unloadAsset);
+                cachedLoadAssetDic.Remove (unloadAssetKey);
             }
 #endif
         }
 
         //============================================//
 
-        // 게임오브젝트
-        public static IObservable<GameObject> InstanctiateAsObservable (string key, Transform parent = null)
+        // 게임 오브젝트 인스턴스<T>
+        public static IObservable<T> InstanctiateAsObservable<T> (string key, GameObject onDestroy,
+            Transform parent = null, Vector3 position = default, Quaternion rotation = default)
+            where T : Component
+        {
+            return InstanctiateAsObservable (key, onDestroy, parent, position, rotation)
+                .Select (instance => instance ? instance.GetComponent<T> () : default);
+        }
+        // 게임 오브젝트 인스턴스
+        public static IObservable<GameObject> InstanctiateAsObservable (string key, GameObject onDestroy,
+            Transform parent = null, Vector3 position = default, Quaternion rotation = default)
         {
 #if USE_ADDESSABLE
-            return Addressables.InstantiateAsync (key, parent).ToUniTask ().ToObservable ();
+            return Observable.ReturnUnit ()
+                    .SelectMany (Addressables.InstantiateAsync (key, position, rotation, parent, true).ToUniTask ().ToObservable ())
+                    .Do (instance =>
+                    {
+                        if (onDestroy)
+                        {
+                            onDestroy.OnDestroyAsObservable ()
+                                .Subscribe (_ => ReleaseInstance (instance))
+                                .AddTo (onDestroy);
+                        }
+                    });
 #else
-        return Observable.Return<GameObject> (default);
+            return Observable.Return<GameObject> (default);
 #endif
         }
-        public static void Release (GameObject releaseTarget)
+        // 게임 오브젝트 인스턴스 해제
+        public static void ReleaseInstance (GameObject releaseTarget)
         {
 #if USE_ADDESSABLE
             Addressables.ReleaseInstance (releaseTarget);

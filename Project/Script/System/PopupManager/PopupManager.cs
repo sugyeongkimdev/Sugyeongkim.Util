@@ -6,17 +6,24 @@ namespace SugyeongKim.Util
 {
     public class PopupManager : GlobalSingleton<PopupManager>
     {
-
-        public static IObservable<T> OpenAsObservable<T> (string path) where T : PopupBase
+        // 팝업을 표시할 layer 설정, bootstrap에 해당 매니저를 생성 후 inspector에 drag drop 가능 
+        [field: SerializeField]
+        public GameObject popupLayer { get; private set; }
+        public static void SetLayer (GameObject setLayer)
         {
-            //var popup = Manager_Popup.instance.CreatePopup<T> ();
-            //p
+            instance.popupLayer = setLayer;
+        }
 
-            //Addressables.LoadAssetsAsync()
+        //============================================//
 
-            return AddressablesManager.LoadAsObservable<GameObject> (path, instance)
-                .Select (prefab => prefab.GetComponent<T> ());
+        // TODO
+        // bootstrab 씬 참조 생성
+        // 팝업 정렬
+        // Layer 정렬
 
+        public static IObservable<T> OpenAsObservable<T> (string path, GameObject onDestroy = null) where T : PopupBase
+        {
+            return AddressablesManager.InstanctiateAsObservable<T> (path, onDestroy, instance.popupLayer.transform);
         }
     }
 }
