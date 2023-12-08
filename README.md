@@ -2,25 +2,33 @@
 ## 필수
 > + [UniRx](https://github.com/neuecc/UniRx)   
 >   + [ump(package)](https://github.com/neuecc/UniRx#upm-package) - `https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts`
-
-
-## Submodule(subtree) git
-
-Unity util git path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git 
-
-Git asset path : Assets/sugyeongkim.Util
-
+> + [UniTask](https://github.com/Cysharp/UniTask)   
+>   + [ump(package)](https://github.com/Cysharp/UniTask#upm-package) - `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask`
 <hr/>
 
-![Sourcetree1](https://github.com/sugyeongkimdev/Sugyeongkim.BigUtil/assets/51020780/e79db6c4-dbc9-4828-bc84-6ec0fd8c4bbd)  
+# 패키지 추가방법
 
-#### 프로젝트에 빠르게 추가하기
+### 1. Git Submodule(subtree)
+##### Git path  
+`https://github.com/sugyeongkimdev/Sugyeongkim.Util.git`
+##### Asset path  
+`Assets/sugyeongkim.Util`
 
-Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git  
+![Submodule(subtree)1](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/ce3d2f01-fc9d-428a-81c9-291a5cd90ea9)
+![Submodule(subtree)2](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/51cfc839-49d1-4b2d-a639-32bb97686f01)
+![Submodule(subtree)3](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/df4ab3ac-02de-41f4-893a-a3e82d3c6b15)
 
-or
 
-Unity util package path : https://github.com/sugyeongkimdev/Sugyeongkim.Unity.git?path=Assets/Sugyeongkim.Util  
+
+# or
+
+### 2. Add Unity package Git URL  
+##### Package path  
+`https://github.com/sugyeongkimdev/Sugyeongkim.Util.git?path=sugyeongkim.Util`
+
+![git url add1](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/20f483a5-52dd-4e01-aee9-3967fc70df84)  
+![git url add2](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/f8cc1ff5-3306-42a6-b1ad-f2b808c3b965)  
+
 
 ---
 ---
