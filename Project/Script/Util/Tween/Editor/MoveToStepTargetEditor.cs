@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SugyeongKim.Util
 {
     [CustomEditor (typeof (MoveToStepTarget))]
-    public class Tween_MoveToStepTargetEditor : Editor
+    public class MoveToStepTargetEditor : Editor
     {
         public void OnSceneGUI ()
         {
