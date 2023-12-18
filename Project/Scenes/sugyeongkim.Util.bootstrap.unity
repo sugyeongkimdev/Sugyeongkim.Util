@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04aefbb69018f4644a966ffac3ec498f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <popupLayer>k__BackingField: {fileID: 1149506969}
+  popupLayer: {fileID: 1149506969}
 --- !u!1 &109702090
 GameObject:
   m_ObjectHideFlags: 0
