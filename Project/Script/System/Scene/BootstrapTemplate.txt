@@ -1,0 +1,71 @@
+using System;
+using DG.Tweening;
+using SugyeongKim.Util;
+using UniRx;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SceneBootstrap : BootstrapTemplate
+{
+    private void Start ()
+    {
+        BootstrapInit ().Subscribe (_ =>
+        {
+            // 씬 이동 예시, 나중에 씬 매니저도 만들 생각
+            Observable.ReturnUnit ()
+                .SelectMany (_ => SceneManager.LoadSceneAsync ("sugyeongkim.Util.empty", LoadSceneMode.Additive).AsObservable ())
+                .SelectMany (_ => SceneManager.UnloadSceneAsync ("sugyeongkim.Util.bootstrap").AsObservable ())
+                .SelectMany (_ => SceneManager.LoadSceneAsync ("main", LoadSceneMode.Additive).AsObservable ())
+                .SelectMany (_ => SceneManager.UnloadSceneAsync ("sugyeongkim.Util.empty").AsObservable ())
+                .Subscribe ();
+        });
+    }
+    
+    /*
+    // 다른 씬에서 시작할 경우 이렇게 호출해서 초기화를 시도
+    public class SceneMain : MonoBehaviour
+    {
+        private void Start ()
+        {
+            SceneBootstrap.instance.BootstrapInit ()
+                .Subscribe (_ =>
+                { 
+                    // callback
+                });
+        }
+    }
+    */
+
+    //============================================//
+    
+    public override IObservable<Unit> BootstrapInit ()
+    {
+        if (isBootstrapInit)
+        {
+            return Observable.ReturnUnit ();
+        }
+        else
+        {
+            isBootstrapInit = true;
+            return Observable.ReturnUnit ()
+                .DoOnSubscribe (() => UtilLog.Log ("Bootstrap start."))
+                .DoOnTerminate (() => UtilLog.Log ("Bootstrap done."))
+
+                // 시스템 초기화
+                .Do (_ =>
+                {
+#if UNITY_IOS || UNITY_ANDROID
+                    //Application.targetFrameRate = 60;
+#else
+                    //QualitySettings.vSyncCount = 1;
+#endif
+                    //Screen.sleepTimeout = SleepTimeout.NeverSleep;
+                    Screen.SetResolution ((int)Screen.width, (int)Screen.height, true);
+
+                })
+
+                // 싱글톤 초기화
+                .SelectMany (_ => SingletonTool.InitSingletonAsObservable ());
+        }
+    }
+}
