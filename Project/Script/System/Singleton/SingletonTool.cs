@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UniRx;
 using UnityEngine;
 
@@ -8,21 +10,12 @@ namespace SugyeongKim.Util
     // 싱글톤 유틸 클래스
     public static class SingletonTool
     {
-        private const string INSTANCE_PROP_NAME = "instance";
+        private const string INSTANCE_NAME = "instance";
+        private const string RUNGENERATED_NAME = "RunGenerated";
         private const string ROOT_NAME = "__GlobalSingleton__";
 
         private static Type GlobalType = typeof (GlobalSingleton<>);
         //private static Type LocalType = typeof (LocalSingleton<>);
-
-        //==========================================================//
-
-        // 싱글톤 초기화 인터페이스
-        public interface ISingletonInit
-        {
-            int InitOrder => 0;
-            void Init ();
-            IObservable<Unit> InitAsObservable ();
-        }
 
         //==========================================================//
 
@@ -34,7 +27,7 @@ namespace SugyeongKim.Util
             {
                 if (_rootTrnas == false)
                 {
-                    var parent = GameObject.FindObjectOfType<SingletonParent> ();
+                    var parent = GameObject.FindObjectOfType<GlobalSingletonParent> ();
                     if (parent)
                     {
                         _rootTrnas = parent.gameObject;
@@ -55,7 +48,7 @@ namespace SugyeongKim.Util
         private static bool isInit = false;
 
         // 초기화 진행 (unirx)
-        public static IObservable<Unit> InitSingletonAsObservable ()
+        public static IObservable<Unit> InitGlobalSingletonAsObservable ()
         {
             if (isInit == false)
             {
@@ -63,9 +56,9 @@ namespace SugyeongKim.Util
 
                 // 초기화 및 비동기 초기화 대기
                 var initConcat = GetGlobalSingletonInstnaceArr ()
-                    .Cast<ISingletonInit> ()
+                    .Cast<IGlobalSingletonInit> ()
                     .OrderBy (target => target.InitOrder)
-                    .Select (target => target.InitAsObservable ().DoOnSubscribe (() => target.Init ()))
+                    .Select (target => target.InitAsObservable ())
                     .Concat ();
 
                 return Observable.WhenAll (initConcat)
@@ -78,25 +71,30 @@ namespace SugyeongKim.Util
         //==========================================================//
 
         // 글로벌 싱글톤을 상속받는 모든 클래스의 instnace 반환
-        private static object[] GetGlobalSingletonInstnaceArr ()
+        private static IEnumerable<object> GetGlobalSingletonInstnaceArr ()
         {
             var searchAllSingleton = SearchInheritanceClassType ();
             return searchAllSingleton
+                // GlobalSingletonIgnoreAttribute 어트리뷰트를 받은 global sington은 초기화, 생성을 모두 무시함
+                .Where (currentType =>
+                {
+                    var ignoreAtt = currentType.GetCustomAttribute<GlobalSingletonIgnoreAttribute> ();
+                    return ignoreAtt == null || ignoreAtt.isIgnore == false;
+                })
                 .Select (currentType =>
                 {
-                    // 싱글톤 제네릭 타입 생성
+                    // global 싱글톤 제네릭 타입 생성
                     var currentSingleton = GlobalType.MakeGenericType (currentType);
-                    // 싱글톤 인스턴스 접근 및 생성
-                    var instance = currentSingleton.GetProperty (INSTANCE_PROP_NAME).GetValue (null);
+                    // global 싱글톤 인스턴스 접근 및 생성, 접근시 property에 의해 자동생성됨
+                    var instance = currentSingleton.GetProperty (INSTANCE_NAME).GetValue (null);
                     return instance;
-                }).ToArray ();
+                });
 
         }
-
         // 리플렉션을 사용한 찾을 타입을 상속받는 모든 타입 찾기
         // ignoreAbstract       추상 무시
         // ignoreSearchType     기준이 되는 타입 무시
-        private static Type[] SearchInheritanceClassType (bool ignoreAbstract = true, bool ignoreSearchType = true)
+        private static IEnumerable<Type> SearchInheritanceClassType (bool ignoreAbstract = true, bool ignoreSearchType = true)
         {
             var findTypeArr = AppDomain.CurrentDomain.GetAssemblies ()
                 .SelectMany (assembly => assembly.GetTypes ())
@@ -119,8 +117,7 @@ namespace SugyeongKim.Util
                         type = type.BaseType;
                     }
                     return false;
-                })
-                .ToArray ();
+                });
 
             return findTypeArr;
         }
