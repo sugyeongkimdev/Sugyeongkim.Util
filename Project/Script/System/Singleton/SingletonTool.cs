@@ -11,7 +11,6 @@ namespace SugyeongKim.Util
     public static class SingletonTool
     {
         private const string INSTANCE_NAME = "instance";
-        private const string RUNGENERATED_NAME = "RunGenerated";
         private const string ROOT_NAME = "__GlobalSingleton__";
 
         private static Type GlobalType = typeof (GlobalSingleton<>);
@@ -54,13 +53,26 @@ namespace SugyeongKim.Util
             {
                 isInit = true;
 
-                // 초기화 및 비동기 초기화 대기
+                // 순서대로 비동기 초기화
+                // 낮은 InitOrder부터 초기화, 같은 순서가 여러개면 같이 실행되지만 같은 순서끼리는 순서가 보장되지 않음
+                // InitOrder가 끝나면 다음 InitOrder가 실행됨
                 var initConcat = GetGlobalSingletonInstnaceArr ()
                     .Cast<IGlobalSingletonInit> ()
-                    .OrderBy (target => target.InitOrder)
-                    .Select (target => target.InitAsObservable ())
+                    .GroupBy (target => target.InitOrder)
+                    .OrderBy (group => group.Key)
+                    .Select (group =>
+                        Observable.Defer (() =>
+                            Observable.WhenAll (group.Select (singleton =>
+                                Observable.Defer (() => singleton.InitAsObservable ())
+                                    //.Do (_ => { UtilLog.Log (singleton); })
+                                    .Catch ((Exception e) =>
+                                    {
+                                        // InitAsObservable() 어느 한 싱글톤에 에러 발생, 로그를 띄우고 나머지 마저 실행
+                                        UtilLog.Error (singleton);
+                                        UtilLog.Error (e);
+                                        return Observable.ReturnUnit ();
+                                    })))))
                     .Concat ();
-
                 return Observable.WhenAll (initConcat)
                     .TakeUntilDestroy (RootTrnas);
             }

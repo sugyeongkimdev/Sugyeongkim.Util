@@ -9,9 +9,6 @@ using UniRx.Triggers;
 using Cysharp.Threading.Tasks;
 #endif
 
-// https://planek.tistory.com/30
-
-
 namespace SugyeongKim.Util
 {
     public class AddressablesManager : GlobalSingleton<AddressablesManager>
@@ -25,14 +22,15 @@ namespace SugyeongKim.Util
         public override IObservable<Unit> InitAsObservable ()
         {
 #if USE_ADDESSABLE
-            return Addressables.InitializeAsync (this).ToObservable ()
+            return Addressables.InitializeAsync (this).ToUniTask ().ToObservable ()
                 .Do (_ =>
                 {
                     cachedLoadAssetDic?.Clear ();
                     cachedLoadAssetDic = new ();
                     loadRuntimeObservableDic?.Clear ();
                     loadRuntimeObservableDic = new ();
-                });
+                })
+                .AsUnitObservable ();
 #else
             return Observable.ReturnUnit ();
 #endif

@@ -46,7 +46,7 @@ namespace SugyeongKim.Util
                 isBootstrapInit = true;
                 return Observable.ReturnUnit ()
                     .DoOnSubscribe (() => UtilLog.Log ("Bootstrap start."))
-                    .DoOnTerminate (() => UtilLog.Log ("Bootstrap done."))
+                    .DoOnCompleted (() => UtilLog.Log ("Bootstrap complete."))
 
                     // 시스템 초기화
                     .Do (_ =>

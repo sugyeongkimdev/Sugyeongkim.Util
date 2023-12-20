@@ -19,7 +19,7 @@ namespace SugyeongKim.Util
                 isBootstrapInit = true;
                 return Observable.ReturnUnit ()
                     .DoOnSubscribe (() => UtilLog.Log ("Bootstrap start."))
-                    .DoOnTerminate (() => UtilLog.Log ("Bootstrap done."))
+                    .DoOnCompleted (() => UtilLog.Log ("Bootstrap complete."))
                     // 부트스트랩씬이 없을경우 우선 씬을 가져옴
                     .SelectMany (_ => TryBootstrapSceneLoad ())
                     // 싱글톤 초기화
