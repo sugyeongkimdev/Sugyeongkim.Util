@@ -7,8 +7,8 @@ namespace SugyeongKim.Util
 {
     public class SceneControlManager : GlobalSingleton<SceneControlManager>
     {
-        private static string emptySceneName = "sugyeongkim.Util.empty";
-        private static string bootstrapSceneName = "sugyeongkim.Util.bootstrap";
+        public static string emptySceneName = "sugyeongkim.Util.empty";
+        public static string bootstrapSceneName = "sugyeongkim.Util.bootstrap";
 
         private static Scene emptyScene;
         private static Scene bootstrapScene;
@@ -24,7 +24,7 @@ namespace SugyeongKim.Util
         /// <param name="nextMode">이동할 씬 로드 방법</param>
         /// <param name="curSceneUnload">지금 씬을 unload할지</param>
         /// <returns></returns>
-        public IObservable<Unit> MoveScene (string nextSceneName,
+        public static IObservable<Unit> LoadScene (string nextSceneName,
             bool curSceneUnload = true,
             LoadSceneMode nextMode = LoadSceneMode.Additive)
         {
@@ -44,7 +44,7 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 씬 로드
-        private IObservable<AsyncOperation> LoadSceneAsObservable (string sceneName, LoadSceneMode mode)
+        private static IObservable<AsyncOperation> LoadSceneAsObservable (string sceneName, LoadSceneMode mode)
         {
             LoadSceneParameters param = new (mode);
 
@@ -53,7 +53,7 @@ namespace SugyeongKim.Util
             return operation.AsAsyncOperationObservable ();
         }
         // 씬 해제
-        private IObservable<AsyncOperation> UnloadSceneAsObservable (string sceneName)
+        private static IObservable<AsyncOperation> UnloadSceneAsObservable (string sceneName)
         {
             UnloadSceneOptions param = UnloadSceneOptions.None;
 

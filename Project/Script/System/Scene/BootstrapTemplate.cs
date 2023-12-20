@@ -13,32 +13,33 @@ namespace SugyeongKim.Util
         {
             // 씬 이동 예시
             BootstrapInit ()
-                .SelectMany (_ => SceneControlManager.instance.MoveScene ("main", false))
+                .Where (isInit => isInit)
+                .SelectMany (_ => SceneControlManager.LoadScene ("main", false))
                 .Subscribe ();
         }
 
-        /*
         // 다른 씬에서 시작할 경우 이렇게 호출해서 초기화를 시도
+        /*
         public class SceneMain : MonoBehaviour
         {
             private void Start ()
             {
-                SceneBootstrap.instance.BootstrapInit ()
+                Observable.ReturnUnit ()
+                    .SelectMany (_ => BootstrapTemplate.instance.BootstrapInit ())
                     .Subscribe (_ =>
-                    { 
-                        // next callback
+                    {
+                        // callback
                     });
             }
         }
         */
-
         //============================================//
 
-        public override IObservable<Unit> BootstrapInit ()
+        public override IObservable<bool> BootstrapInit ()
         {
             if (isBootstrapInit)
             {
-                return Observable.ReturnUnit ();
+                return Observable.Return (false);
             }
             else
             {
@@ -61,7 +62,8 @@ namespace SugyeongKim.Util
                     })
 
                     // 싱글톤 초기화
-                    .SelectMany (_ => SingletonTool.InitGlobalSingletonAsObservable ());
+                    .SelectMany (_ => SingletonTool.InitGlobalSingletonAsObservable ())
+                    .Select (_ => true);
             }
         }
     }
