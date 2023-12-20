@@ -16,11 +16,6 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        // TODO
-        // bootstrab 씬 참조 생성
-        // 팝업 정렬
-        // Layer 정렬
-
         public static IObservable<T> OpenAsObservable<T> (string path, GameObject onDestroy = null) where T : PopupBase
         {
             return AddressablesManager.InstanctiateAsObservable<T> (path, onDestroy, instance.popupLayer.transform);

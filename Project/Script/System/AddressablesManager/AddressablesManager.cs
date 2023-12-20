@@ -112,21 +112,23 @@ namespace SugyeongKim.Util
 
         // 게임 오브젝트 인스턴스<T>
         public static IObservable<T> InstanctiateAsObservable<T> (string key, GameObject onDestroy,
-            Transform parent = null, Vector3 position = default, Quaternion rotation = default)
+            Transform parent = null, bool instantiateInWorldSpace = false, Vector3 position = default, Quaternion rotation = default)
             where T : Component
         {
-            return InstanctiateAsObservable (key, onDestroy, parent, position, rotation)
+            return InstanctiateAsObservable (key, onDestroy, parent, instantiateInWorldSpace, position, rotation)
                 .Select (instance => instance ? instance.GetComponent<T> () : default);
         }
         // 게임 오브젝트 인스턴스
         public static IObservable<GameObject> InstanctiateAsObservable (string key, GameObject onDestroy,
-            Transform parent = null, Vector3 position = default, Quaternion rotation = default)
+            Transform parent = null, bool instantiateInWorldSpace = false, Vector3 position = default, Quaternion rotation = default)
         {
 #if USE_ADDESSABLE
             return Observable.ReturnUnit ()
-                    .SelectMany (Addressables.InstantiateAsync (key, position, rotation, parent, true).ToUniTask ().ToObservable ())
+                    .SelectMany (Addressables.InstantiateAsync (key, parent, instantiateInWorldSpace).ToUniTask ().ToObservable ())
                     .Do (instance =>
                     {
+                        if (position != default) { instance.transform.position = position; }
+                        if (rotation != default) { instance.transform.rotation = rotation; }
                         if (onDestroy)
                         {
                             onDestroy.OnDestroyAsObservable ()
