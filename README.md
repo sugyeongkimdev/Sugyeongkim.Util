@@ -8,23 +8,13 @@
 
 # 패키지 추가방법
 
-### 1. Git Submodule(subtree)
-##### Git path  
-`https://github.com/sugyeongkimdev/Sugyeongkim.Util.git`
-##### Asset path  
-`Assets/sugyeongkim.Util`
-
-![Submodule(subtree)1](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/ce3d2f01-fc9d-428a-81c9-291a5cd90ea9)
-![Submodule(subtree)2](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/51cfc839-49d1-4b2d-a639-32bb97686f01)
-![Submodule(subtree)3](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/df4ab3ac-02de-41f4-893a-a3e82d3c6b15)
-
-
-<hr/>
+### Download
+![git download](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/420c5e3b-cdc7-453c-92ec-4874012b7d6c)
 
 # or
 
-### 2. Add Unity package Git URL  
-##### Package path  
+### Add Unity package Git URL  
+##### Package path
 `https://github.com/sugyeongkimdev/Sugyeongkim.Util.git?path=sugyeongkim.Util`
 
 ![git url add1](https://github.com/sugyeongkimdev/Sugyeongkim.Util/assets/51020780/20f483a5-52dd-4e01-aee9-3967fc70df84)  
