@@ -1,0 +1,18 @@
+{
+    "name": "SugyeongKim.Util.Editor.Assembly",
+    "rootNamespace": "",
+    "references": [
+        "SugyeongKim.Util.Assembly"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
