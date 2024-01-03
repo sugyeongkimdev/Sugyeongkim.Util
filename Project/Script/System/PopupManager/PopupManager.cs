@@ -9,9 +9,6 @@ namespace SugyeongKim.Util
 {
     public class PopupManager : GlobalSingleton<PopupManager>
     {
-        // 팝업을 표시할 layer 설정, bootstrap에 해당 매니저를 생성 후 inspector에 drag drop 가능 
-        [field: SerializeField]
-        public GameObject popupLayer { get; private set; }
         public static List<PopupBase> popupList { get; private set; }
 
         //============================================//
@@ -36,18 +33,14 @@ namespace SugyeongKim.Util
         }
 
         //============================================//
-
-        public static void SetLayer (GameObject setLayer)
-        {
-            instance.popupLayer = setLayer;
-        }
-
-        //============================================//
         // 팝업 열기
         public static IObservable<T> OpenAsObservable<T> (string addressPath, GameObject onDestroy = null) where T : PopupBase<T>
         {
             return Observable.ReturnUnit ()
-                .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<T> (addressPath, onDestroy, instance.popupLayer.transform))
+                .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<T> (
+                    addressPath,
+                    onDestroy,
+                    UICanvasManager.instance.popupLayer.transform))
                 .SelectMany (popup => popup.InitAsObservable ().Select (_ => popup))
                 .Do (popup => popupList.Add (popup));
         }
