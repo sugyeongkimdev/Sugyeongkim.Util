@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -44,8 +45,9 @@ namespace SugyeongKim.Util
                 .SelectMany (popup => popup.InitAsObservable ().Select (_ => popup))
                 .Do (popup => popupList.Add (popup));
         }
+
         // 팝업 닫기
-        public static void Close (PopupBase popup)
+        public static void Close (PopupBase popup, bool isReleseFields = true)
         {
             for (int i = 0; i < popupList.Count; i++)
             {
@@ -53,8 +55,29 @@ namespace SugyeongKim.Util
                 {
                     var closePopup = popupList[i];
                     popupList.RemoveAt (i);
+                    if (isReleseFields)
+                    {
+                        // 내부필드 해제
+                        ReleaseFields (popup);
+                    }
+
                     AddressablesManager.ReleaseInstance (closePopup.gameObject);
+                    return;
                 }
+            }
+        }
+        // 팝업 내부 필드 전부 해제
+        public static void ReleaseFields (PopupBase releaseTargetPopup)
+        {
+            var popupType = releaseTargetPopup.GetType ();
+            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+            foreach (var field in popupType.GetFields (flags))
+            {
+                field.SetValue (releaseTargetPopup, null);
+            }
+            foreach (var prop in popupType.GetProperties (flags))
+            {
+                prop.SetValue (releaseTargetPopup, null);
             }
         }
     }
