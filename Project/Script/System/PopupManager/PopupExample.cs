@@ -5,51 +5,70 @@ using UnityEngine;
 namespace SugyeongKim.Util
 {
     // 팝업 만들기 예시, 해당 컴포넌트를 게임오브젝트에 부착함
-    /*
-    // 팝업 열기 예시
-    PopupManager.GetPopupAsObservable<PopupExample> ("PopupExampleAddressPath")
-        .Do (popup => popup.SetData (new PopupExample.Setting ()
-        {
-            setTile = "Title",
-            setContent = "Content",
-            setData1 = 1
-        }))
-        .SelectMany (pop => pop.ShowAsObservable ())
-        .Subscribe (result =>
-        {
-            UnityEngine.Debug.Log (result.restunData1);
-            UnityEngine.Debug.Log (result.restunData2);
-            UnityEngine.Debug.Log (result.restunData3);
-        });
-    */
     public class PopupExample : PopupBase<PopupExample.Setting, PopupExample.Result>
     {
+        // 팝업 열기 예시
+        public static void OpenMethod ()
+        {
+            var setting = new PopupExample.Setting ()
+            {
+                setData1 = "Title",
+                setData2 = "Content",
+                setData3 = "etc",
+            };
+            ShowPopupExampleAsObservable (setting).Subscribe (result =>
+            {
+                // cloase callbask
+                if (result.isOkClick)
+                {
+                    // popup ok click action
+                }
+                Debug.Log (result.restunData1);
+                Debug.Log (result.restunData2);
+                Debug.Log (result.restunData3);
+            });
+        }
+        public static IObservable<PopupExample.Result> ShowPopupExampleAsObservable (PopupExample.Setting setting)
+        {
+            return PopupManager.GetPopupAsObservable<PopupExample> ("PopupExampleAddressPath")
+                .Do (popup => popup.SetData (setting))
+                .SelectMany (pop => pop.ShowAsObservable ());
+        }
+
+        //============================================//
+
         public class Setting
         {
-            public string setTile;
-            public string setContent;
-            public int setData1;
+            public string setData1;
+            public string setData2;
+            public string setData3;
         }
         public class Result
         {
-            public int restunData1;
-            public int restunData2;
-            public int restunData3;
+            public string restunData1;
+            public string restunData2;
+            public string restunData3;
+            public bool isOkClick;
         }
+
+        //============================================//
+
         public override IObservable<Unit> OnShowAsObservable ()
         {
-            // -init action /OR/ -show action
-            // setting.setTile;
-            // setting.setContent;
-            // setting.setData1;
+            // -init popup action
+            // -show popup action
+            Debug.Log (setting.setData1);
+            Debug.Log (setting.setData2);
+            Debug.Log (setting.setData3);
             return base.OnShowAsObservable ();
         }
         public override IObservable<Result> OnCloseAsObservable ()
         {
-            // -close action
-            // result.restunData1;
-            // result.restunData2;
-            // result.restunData3;
+            // -close popup action
+            result.restunData1 = $"return1 {setting.setData1}";
+            result.restunData2 = $"return2 {setting.setData2}";
+            result.restunData3 = $"return3 {setting.setData3}";
+            result.isOkClick = true;
             return base.OnCloseAsObservable ();
         }
     }

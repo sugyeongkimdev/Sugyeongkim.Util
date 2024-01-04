@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace SugyeongKim.Util
 {
-    public class PopupResult { }
-    public class PopupSetting { }
     public abstract class PopupBase : MonoBehaviour
     {
+        public class BaseSetting
+        {
+        }
+        public class BaseResult
+        {
+            public bool isOkClick;
+        }
+
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
         public bool enableBackspaceClose { get; protected set; } = true;
 
