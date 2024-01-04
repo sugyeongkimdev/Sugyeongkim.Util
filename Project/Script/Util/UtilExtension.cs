@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
 
 namespace SugyeongKim.Util
 {
@@ -21,7 +23,24 @@ namespace SugyeongKim.Util
                 loop.Invoke (item, index++);
             }
         }
+
+
         //==========================================================/
+
+        // target component class 필드/프로퍼티 전부 해제
+        public static void ReleaseFields<T> (this T releaseTarget) where T : Component
+        {
+            var popupType = releaseTarget.GetType ();
+            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+            foreach (var field in popupType.GetFields (flags))
+            {
+                field.SetValue (releaseTarget, null);
+            }
+            foreach (var prop in popupType.GetProperties (flags))
+            {
+                prop.SetValue (releaseTarget, null);
+            }
+        }
 
     }
 }
