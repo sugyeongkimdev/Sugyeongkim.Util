@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -12,38 +11,39 @@ namespace SugyeongKim.Util
     {
         public static List<PopupBase> popupList { get; private set; }
 
+        // 모든 팝업이 뒤로가기로 닫을 수 있는지 여부
+        public static bool enableBackspaceClose { get; set; } = true;
+
         //============================================//
 
+        private IDisposable updateDisposable;
         public override IObservable<Unit> InitAsObservable ()
         {
             popupList = new List<PopupBase> ();
-            this.UpdateAsObservable ()
-                .Do (_ =>
-                {
-                    if (Input.GetKeyDown (KeyCode.Escape))
-                    {
-                        if (popupList.Any ())
-                        {
-                            Close (popupList[0]);
-                        }
-                    }
-                })
+            // 팝업 뒤로가기로 닫기 기능 추가
+            updateDisposable?.Dispose ();
+            updateDisposable = this.UpdateAsObservable ()
+                .Where (_ => enableBackspaceClose)
+                // 뒤로가기 클릭
+                .Where (_ => Input.GetKeyDown (KeyCode.Escape))
+                .Do (_ => popupList.Any ())
+                .Select (_ => popupList[0])
+                // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
+                .Where (popup => popup.enableBackspaceClose)
+                // 닫기
+                .SelectMany (_ => popupList[0].CloseAsObservable ())
                 .Subscribe ()
                 .AddTo (this);
             return base.InitAsObservable ();
         }
 
         //============================================//
-        // 팝업 열기
-        public static IObservable<T> OpenAsObservable<T> (string addressPath, GameObject onDestroy = null) where T : PopupBase<T>
+        // 팝업 열기, 닫힐때 Result 발행
+        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : PopupBase
         {
             return Observable.ReturnUnit ()
-                .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<T> (
-                    addressPath,
-                    onDestroy,
-                    UICanvasManager.instance.popupLayer.transform))
-                .SelectMany (popup => popup.InitAsObservable ().Select (_ => popup))
-                .Do (popup => popupList.Add (popup));
+                .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<Popup> (popupAddressPath, onDestroy, UICanvasManager.instance.popupLayer.transform))
+                .Do (popup => { popupList.Add (popup); });
         }
 
         // 팝업 닫기
@@ -55,29 +55,16 @@ namespace SugyeongKim.Util
                 {
                     var closePopup = popupList[i];
                     popupList.RemoveAt (i);
+
                     if (isReleseFields)
                     {
                         // 내부필드 해제
-                        ReleaseFields (popup);
+                        popup.ReleaseFields ();
                     }
 
                     AddressablesManager.ReleaseInstance (closePopup.gameObject);
                     return;
                 }
-            }
-        }
-        // 팝업 내부 필드 전부 해제
-        public static void ReleaseFields (PopupBase releaseTargetPopup)
-        {
-            var popupType = releaseTargetPopup.GetType ();
-            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-            foreach (var field in popupType.GetFields (flags))
-            {
-                field.SetValue (releaseTargetPopup, null);
-            }
-            foreach (var prop in popupType.GetProperties (flags))
-            {
-                prop.SetValue (releaseTargetPopup, null);
             }
         }
     }
