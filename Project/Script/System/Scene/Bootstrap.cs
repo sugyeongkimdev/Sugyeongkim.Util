@@ -70,7 +70,12 @@ namespace SugyeongKim.Util
                     .SelectMany (_ => TrySceneLoadBootstrap ())
                     // set bootsrap canvas resolution
                     // TODO : 해상도는 상수가 아니라 유니티 에셋으로 관리되어야함
-                    .Do (_ => UICanvasManager.instance.scaler.referenceResolution = new Vector2 (1080, 1920))
+                    .Do (_ =>
+                    {
+                        var scaler = UICanvasManager.instance.scaler;
+                        scaler.referenceResolution = new Vector2 (1080, 1920);
+                        scaler.matchWidthOrHeight = Screen.width > Screen.height ? 1 : 0;
+                    })
 
                     // singleton init
                     .SelectMany (_ => SingletonTool.InitGlobalSingletonAsObservable ())
