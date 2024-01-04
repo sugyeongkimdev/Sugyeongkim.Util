@@ -25,11 +25,9 @@ namespace SugyeongKim.Util
             updateDisposable = this.UpdateAsObservable ()
                 .Where (_ => enableBackspaceClose)
                 // 뒤로가기 클릭
-                .Where (_ => Input.GetKeyDown (KeyCode.Escape))
-                .Do (_ => popupList.Any ())
-                .Select (_ => popupList[0])
+                .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupList.Any ())
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (popup => popup.enableBackspaceClose)
+                .Where (_ => popupList[0].enableBackspaceClose)
                 // 닫기
                 .SelectMany (_ => popupList[0].CloseAsObservable ())
                 .Subscribe ()
