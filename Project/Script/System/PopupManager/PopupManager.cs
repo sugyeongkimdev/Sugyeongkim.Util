@@ -27,9 +27,9 @@ namespace SugyeongKim.Util
                 // 뒤로가기 클릭
                 .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupList.Any ())
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (_ => popupList[0].enableBackspaceClose)
+                .Where (_ => popupList.Last ().enableBackspaceClose)
                 // 닫기
-                .SelectMany (_ => popupList[0].CloseAsObservable ())
+                .SelectMany (_ => popupList.Last ().CloseAsObservable ())
                 .Subscribe ()
                 .AddTo (this);
             return base.InitAsObservable ();

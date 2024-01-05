@@ -32,10 +32,10 @@ namespace SugyeongKim.Util
 
     //============================================//
 
-    public abstract class PopupBase<Result> : PopupBase
+    public abstract class PopupBase<Result> : PopupBase where Result : new()
     {
         // 팝업 닫힐시 결과값
-        protected Result result;
+        protected Result result = new ();
         // 팝업 닫힐시 결과값 unirx 이벤트 처리
         protected Subject<Result> resultSubject = new ();
 
@@ -96,7 +96,7 @@ namespace SugyeongKim.Util
 
     //============================================//
 
-    public abstract class PopupBase<Setting, Result> : PopupBase<Result>
+    public abstract class PopupBase<Setting, Result> : PopupBase<Result> where Result : new()
     {
         protected Setting setting;
 
