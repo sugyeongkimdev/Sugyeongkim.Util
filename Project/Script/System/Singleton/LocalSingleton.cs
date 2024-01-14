@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 
 namespace SugyeongKim.Util
 {
     // 간단한 싱글톤, 찾기만함
-    public abstract class LocalSingleton<T> : MonoBehaviour where T : Component
+    public abstract class LocalSingleton<T> : MonoBehaviour, IDisposable where T : Component
     {
         // GameObject bool check는 성능이 좋지 못함,
         // onDestroy시 토글되는 bool로 성능 최적화 시도
@@ -45,10 +46,13 @@ namespace SugyeongKim.Util
             _instance = IsValid () ? _instance : transform as T;
         }
 
+
         public virtual void OnDestroy ()
         {
             _cachedInstanceBool = false;
             _instance = null;
         }
+
+        public virtual void Dispose () { }
     }
 }
