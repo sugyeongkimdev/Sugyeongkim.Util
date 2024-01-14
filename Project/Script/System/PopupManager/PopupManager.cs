@@ -37,16 +37,29 @@ namespace SugyeongKim.Util
 
         //============================================//
         // 팝업 열기, 닫힐때 Result 발행
+        private static bool IsCreatingPopup;
         public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : PopupBase
         {
             return Observable.ReturnUnit ()
+                .Do (_ =>
+                {
+                    IsCreatingPopup = true;
+                })
                 .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<Popup> (popupAddressPath, onDestroy, UICanvasManager.instance.popupLayer.transform))
-                .Do (popup => { popupList.Add (popup); });
+                .Do (popup =>
+                {
+                    IsCreatingPopup = false;
+                    popupList.Add (popup);
+                });
         }
 
         // 팝업 닫기
-        public static void Close (PopupBase popup, bool isReleseFields = true)
+        public static bool TryClosePopup (PopupBase popup, bool isReleseFields = true)
         {
+            if (IsCreatingPopup)
+            {
+                return false;
+            }
             for (int i = 0; i < popupList.Count; i++)
             {
                 if (popupList[i] == popup)
@@ -60,10 +73,12 @@ namespace SugyeongKim.Util
                         popup.ReleaseFields ();
                     }
 
+                    // addrsable instnace 해제
                     AddressablesManager.ReleaseInstance (closePopup.gameObject);
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
     }
 }

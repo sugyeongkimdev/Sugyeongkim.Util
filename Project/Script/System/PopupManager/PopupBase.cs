@@ -20,13 +20,13 @@ namespace SugyeongKim.Util
         // 팝업 닫기 (unirx)
         public virtual IObservable<Unit> CloseAsObservable ()
         {
-            PopupManager.Close (this, true);
+            PopupManager.TryClosePopup (this);
             return Observable.ReturnUnit ();
         }
         // 팝업 닫기
         public virtual void Close ()
         {
-            CloseAsObservable ().Subscribe ().AddTo (this);
+            PopupManager.TryClosePopup (this);
         }
     }
 
@@ -55,29 +55,21 @@ namespace SugyeongKim.Util
         private bool isClosing;
         public override IObservable<Unit> CloseAsObservable ()
         {
-            if (isClosing)
-            {
-                return Observable.ReturnUnit ();
-            }
-            isClosing = true;
             return Observable.ReturnUnit ()
                 .Do (_ =>
                 {
-                    // 결과 반환
-                    if (resultSubject.HasObservers)
+                    // 팝업 삭제 시도
+                    if(PopupManager.TryClosePopup (this))
                     {
-                        resultSubject.OnNext (result);
-                        resultSubject.OnCompleted ();
-                        resultSubject.Dispose ();
+                        // 결과 반환
+                        if (resultSubject.HasObservers)
+                        {
+                            resultSubject.OnNext (result);
+                            resultSubject.OnCompleted ();
+                            resultSubject.Dispose ();
+                        }
                     }
-                    // 팝업 삭제
-                    PopupManager.Close (this, true);
                 });
-        }
-        // 팝업 닫기
-        public override void Close ()
-        {
-            CloseAsObservable ().Subscribe ().AddTo (this);
         }
 
         //============================================//
