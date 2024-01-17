@@ -64,32 +64,23 @@ namespace SugyeongKim.Util
                         QualitySettings.vSyncCount = 1;
 #endif
                         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-                        Screen.SetResolution ((int)Screen.width, (int)Screen.height, true);
+                        Screen.SetResolution (Screen.width, Screen.height, true);
                     })
 
                     // try load bootstrap scene
                     .SelectMany (_ => TrySceneLoadBootstrap ())
+
                     // set bootsrap canvas resolution
-                    // TODO : 해상도는 상수가 아니라 유니티 에셋으로 관리되어야함
+                    // TODO : 해상도는 상수가 아니라 Scriptableobject로 관리되어야함
                     .Do (_ =>
                     {
-                        SetCanvasScaler (UICanvasManager.instance.canvas);
+                        UICanvasManager.SetCanvasScaler (UICanvasManager.instance.canvas);
                     })
 
                     // singleton init
                     .SelectMany (_ => SingletonTool.InitGlobalSingletonAsObservable ())
                     .Select (_ => true);
             }
-        }
-
-        // canvas 해상도 설정
-        public static void SetCanvasScaler (Canvas targetCanvas)
-        {
-            var targetScaler = targetCanvas.GetComponent<CanvasScaler> ();
-            targetScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            targetScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            targetScaler.referenceResolution = new Vector2 (1080, 1920);
-            targetScaler.matchWidthOrHeight = Screen.width > Screen.height ? 0 : 1;
         }
 
         // 부트스트랩씬이 없을경우 씬 로드하기
