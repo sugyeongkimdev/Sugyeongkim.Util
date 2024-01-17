@@ -119,6 +119,9 @@ public static class SelectableExtension
         Action refreshAction,
         IReactiveProperty<bool> sharedCanExecute = null)
     {
+        // 모든 이벤트 제거
+        btn.onClick.RemoveAllListeners ();
+
         // UniRx.BindToOnClick를 참조한 ReactiveCommand
         sharedCanExecute ??= new BoolReactiveProperty (true);
         var command = sharedCanExecute.ToAsyncReactiveCommand ();

@@ -124,5 +124,7 @@ public static class HierarchySearchExtension
     // 이미지 찾기
     public static Image SearchImage (this GameObject target, string path = "") => target.Search<Image> (path);
     public static Image SearchImage (this Component target, string path = "") => target.Search<Image> (path);
+    public static RawImage SearchRawImage (this GameObject target, string path = "") => target.Search<RawImage> (path);
+    public static RawImage SearchRawImage (this Component target, string path = "") => target.Search<RawImage> (path);
 
 }
