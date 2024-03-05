@@ -2,7 +2,6 @@ using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace SugyeongKim.Util
 {
@@ -13,11 +12,15 @@ namespace SugyeongKim.Util
         // bootstarb 시작
         private void Start ()
         {
-            BootstrapInit ()
+            Observable.ReturnUnit ()
+                .SelectMany (_ => BootstrapInit ())
                 .Where (isMoveNext => isMoveNext)
                 // bootstarb scene -> main scene
                 // TODO : 이동할 Scene 이름은 상수가 아니라 유니티 에셋으로 관리되어야함
-                .SelectMany (_ => SceneControlManager.LoadScene ("main", false))
+                .SelectMany (_ => SceneControlManager.LoadScene (
+                    "Lobby",
+                    SceneControlManager.emptySceneName,
+                    curSceneUnload: false))
                 .Subscribe ();
         }
 
@@ -25,7 +28,7 @@ namespace SugyeongKim.Util
 
         /*
         // 최초 실행이 다른 씬에서 시작할 경우 해당 코드를 호출해서 bootstarp 초기화를 시도
-        public class SceneMain : MonoBehaviour
+        public class LobbyScene : MonoBehaviour
         {
             private void Start ()
             {
@@ -70,11 +73,12 @@ namespace SugyeongKim.Util
                     // try load bootstrap scene
                     .SelectMany (_ => TrySceneLoadBootstrap ())
 
-                    // set bootsrap canvas resolution
-                    // TODO : 해상도는 상수가 아니라 Scriptableobject로 관리되어야함
                     .Do (_ =>
                     {
+                        // set bootsrap canvas resolution
+                        // TODO : 해상도는 상수가 아니라 Scriptableobject로 관리되어야함
                         UICanvasManager.SetCanvasScaler (UICanvasManager.instance.canvas);
+
                     })
 
                     // singleton init
@@ -90,7 +94,11 @@ namespace SugyeongKim.Util
             {
                 return Observable.ReturnUnit ();
             }
-            return SceneControlManager.LoadScene (SceneControlManager.bootstrapSceneName, false, LoadSceneMode.Additive);
+            return SceneControlManager.LoadScene (
+                SceneControlManager.bootstrapSceneName,
+                SceneControlManager.emptySceneName,
+                curSceneUnload: false,
+                LoadSceneMode.Additive);
         }
     }
 }

@@ -22,18 +22,21 @@ namespace SugyeongKim.Util
         public override IObservable<Unit> InitAsObservable ()
         {
 #if USE_ADDESSABLE
-            return Addressables.InitializeAsync (this).ToUniTask ().ToObservable ()
-                .Do (_ =>
-                {
-                    cachedLoadAssetDic?.Clear ();
-                    cachedLoadAssetDic = new ();
-                    loadRuntimeObservableDic?.Clear ();
-                    loadRuntimeObservableDic = new ();
-                })
-                .AsUnitObservable ();
-#else
-            return Observable.ReturnUnit ();
+            //return Addressables.InitializeAsync (true).ToUniTask ().ToObservable ()
+            //    .Do (_ =>
+            //    {
+            //        cachedLoadAssetDic?.Clear ();
+            //        cachedLoadAssetDic = new Dictionary<string, object> ();
+            //        loadRuntimeObservableDic?.Clear ();
+            //        loadRuntimeObservableDic = new Dictionary<string, IObservable<object>> ();
+            //    })
+            //    .AsUnitObservable ();
+            cachedLoadAssetDic?.Clear ();
+            cachedLoadAssetDic = new Dictionary<string, object> ();
+            loadRuntimeObservableDic?.Clear ();
+            loadRuntimeObservableDic = new Dictionary<string, IObservable<object>> ();
 #endif
+            return Observable.ReturnUnit ();
         }
 
         //============================================//
@@ -59,7 +62,7 @@ namespace SugyeongKim.Util
                     var loadObservable = Addressables.LoadAssetAsync<T> (key).ToUniTask ().ToObservable ()
                         .Do (loadAsset =>
                         {
-                            cachedLoadAssetDic.TryAdd (key, loadAsset);
+                            cachedLoadAssetDic.Add (key, loadAsset);
                             loadRuntimeObservableDic.Remove (key);
                         })
                         .Do (loadAsset =>
@@ -72,7 +75,7 @@ namespace SugyeongKim.Util
                             }
                         });
                     // 로드 이벤트 저장 및 반환
-                    loadRuntimeObservableDic.TryAdd (key, loadObservable.Cast<T, object> ());
+                    loadRuntimeObservableDic.Add (key, loadObservable.Cast<T, object> ());
                     return loadObservable;
                 }
             }

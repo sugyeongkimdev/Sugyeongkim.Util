@@ -65,13 +65,16 @@ namespace SugyeongKim.Util
                             Observable.WhenAll (group.Select (singleton =>
                                 Observable.Defer (() => singleton.InitAsObservable ())
                                     //.Do (_ => { UtilLog.Log (singleton); })
-                                    .Catch ((Exception e) =>
-                                    {
-                                        // InitAsObservable() 어느 한 싱글톤에 에러 발생, 로그를 띄우고 나머지 마저 실행
-                                        UtilLog.Error (singleton);
-                                        UtilLog.Error (e);
-                                        return Observable.ReturnUnit ();
-                                    })))))
+
+                                    //.Catch ((Exception e) =>
+                                    //{
+                                    //    // InitAsObservable() 어느 한 싱글톤에 에러 발생, 로그를 띄우고 나머지 마저 실행
+                                    //    UtilLog.Error (singleton);
+                                    //    UtilLog.Error (e);
+                                    //    return Observable.ReturnUnit ();
+                                    //})
+                                    ))))
+
                     .Concat ();
                 return Observable.WhenAll (initConcat)
                     .TakeUntilDestroy (RootTrnas);

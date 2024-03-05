@@ -50,11 +50,11 @@ public static class SelectableExtension
     ///     () => {/*새로고침 Callback. interval 종료 후 및 공유 이벤트 발동*/});
     /// </summary>
     /// <param name="btn"></param>
-    /// <param name="clickAction">Click Callback</param>
     /// <param name="interval">interval 시간(s) 만큼 대기 후 클릭 가능</param>
+    /// <param name="clickAction">Click Callback</param>
     /// <param name="refreshAction">새로고침. interval 시간이 흐른 뒤 호출되거나, sharedCanExecute이 호출하면 호출됨</param>
     /// <param name="sharedCanExecute">해당 prop을 공유하는 모든 버튼은 공유되는 버튼이 하나라도 사용 불가하면 전부 사용불가</param>
-    public static void AddOnClickInterval (this Button btn, Action clickAction, float interval, Action refreshAction,
+    public static void AddOnClickInterval (this Button btn, float interval, Action clickAction, Action refreshAction,
         IReactiveProperty<bool> sharedCanExecute = null)
     {
         btn.AddOnClick (
@@ -125,7 +125,7 @@ public static class SelectableExtension
         // UniRx.BindToOnClick를 참조한 ReactiveCommand
         sharedCanExecute ??= new BoolReactiveProperty (true);
         var command = sharedCanExecute.ToAsyncReactiveCommand ();
-        var d1 = command.CanExecute.SubscribeToInteractable (btn);
+        //var d1 = command.CanExecute.SubscribeToInteractable (btn).AddTo (btn);
         var d2 = btn.OnClickAsObservable ().SubscribeWithState (command, (x, c) => c.Execute (x));
         var d3 = command.Subscribe (_ => clickObservableFunc?.Invoke ().AsUnitObservable ());
         // add refresh action
@@ -133,7 +133,8 @@ public static class SelectableExtension
         // clickObservableFunc처리 이후 조건에 따라 버튼이 활성화 되면 안되는 경우를 위한 Callback처리
         var d4 = command.CanExecute.Subscribe (_ => { refreshAction?.Invoke (); });
 
-        StableCompositeDisposable.Create (d1, d2, d3, d4);
+        //StableCompositeDisposable.Create (d1, d2, d3, d4);
+        StableCompositeDisposable.Create (d2, d3, d4);
     }
 
     //============================================//
@@ -219,7 +220,7 @@ public static class SelectableExtension
     // 이하 Animation Component 확장
 
     // 애니메이션 컴포넌트 index 실행
-    public static IObservable<bool> PlayAsObservable (this Animation anim, int animIndex)
+    public static IObservable<bool> PlayAsObservable (this Animation anim, int animIndex, bool backward = false)
     {
         return Observable.Create<bool> (ob =>
         {
@@ -227,7 +228,16 @@ public static class SelectableExtension
             var animState = anim.GetState (animIndex);
             if (animState)
             {
-                animState.speed = 1f;
+                if (backward)
+                {
+                    animState.SetLastFrame ();
+                    animState.speed = -1f;
+                }
+                else
+                {
+                    animState.SetFirstFrame ();
+                    animState.speed = 1f;
+                }
                 anim.Play (animState.clip.name);
                 return Observable.Timer (TimeSpan.FromSeconds (animState.clip.length))
                     .Subscribe (_ =>
@@ -246,9 +256,9 @@ public static class SelectableExtension
     }
 
     // 애니메이션 컴포넌트 첫번쨰 실행
-    public static IObservable<bool> PlayFirstAsObservable (this Animation anim)
+    public static IObservable<bool> PlayFirstAsObservable (this Animation anim, bool backward = false)
     {
-        return anim.PlayAsObservable (0);
+        return anim.PlayAsObservable (0, backward);
     }
 
     // AnimationState에서 첫 프레임으로 설정
@@ -260,10 +270,23 @@ public static class SelectableExtension
             animState.speed = 0f;
         }
     }
+    public static void SetLastFrame (this AnimationState animState)
+    {
+        if (animState)
+        {
+            animState.time = animState.length;
+            animState.speed = 0f;
+        }
+    }
     // AnimationState에서 첫 프레임으로 설정
     public static void SetFirstFrame (this Animation anim, int animIndex)
     {
         anim.GetState (animIndex).SetFirstFrame ();
+    }
+    // AnimationState에서 마지막 프레임으로 설정
+    public static void SetLastFrame (this Animation anim, int animIndex)
+    {
+        anim.GetState (animIndex).SetLastFrame ();
     }
 
     // Animation Compoent에서 AnimationState 가져오기

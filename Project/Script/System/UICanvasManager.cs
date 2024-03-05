@@ -7,11 +7,16 @@ namespace SugyeongKim.Util
 {
     public class UICanvasManager : GlobalSingleton<UICanvasManager>
     {
+        [SerializeField] private Camera uiCamera;
+        public static Camera UICamera => instance.uiCamera;
+
         public Canvas canvas;
         public CanvasScaler scaler;
         public GraphicRaycaster raycaster;
 
-        [field: SerializeField] public GameObject popupLayer { get; private set; }
+        [field: SerializeField] public Transform backLayer { get; private set; }
+        [field: SerializeField] public Transform popupLayer { get; private set; }
+        [field: SerializeField] public Transform systemLayer { get; private set; }
 
         //============================================//
 

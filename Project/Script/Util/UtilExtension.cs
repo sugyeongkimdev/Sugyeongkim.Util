@@ -38,7 +38,10 @@ namespace SugyeongKim.Util
             }
             foreach (var prop in popupType.GetProperties (flags))
             {
-                prop.SetValue (releaseTarget, null);
+                if (prop.CanWrite)
+                {
+                    prop.SetValue (releaseTarget, null);
+                }
             }
         }
 

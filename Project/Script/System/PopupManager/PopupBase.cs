@@ -35,9 +35,9 @@ namespace SugyeongKim.Util
     public abstract class PopupBase<Result> : PopupBase where Result : new()
     {
         // 팝업 닫힐시 결과값
-        protected Result result = new ();
+        protected Result result = new Result ();
         // 팝업 닫힐시 결과값 unirx 이벤트 처리
-        protected Subject<Result> resultSubject = new ();
+        protected Subject<Result> resultSubject = new Subject<Result> ();
 
         //============================================//
 
@@ -59,7 +59,7 @@ namespace SugyeongKim.Util
                 .Do (_ =>
                 {
                     // 팝업 삭제 시도
-                    if(PopupManager.TryClosePopup (this))
+                    if (PopupManager.TryClosePopup (this))
                     {
                         // 결과 반환
                         if (resultSubject.HasObservers)
@@ -95,7 +95,7 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 팝업 데이터 넣기
-        public void SetData (Setting setting)
+        public virtual void SetData (Setting setting)
         {
             this.setting = setting;
         }

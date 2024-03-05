@@ -29,7 +29,7 @@ namespace SugyeongKim.Util
             _cachedInstanceBool = IsValid ();
             if (_cachedInstanceBool == false)
             {
-                _instance = FindObjectOfType<T> ();
+                _instance = FindObjectOfType<T> (true);
             }
             return _instance;
         }
@@ -49,10 +49,13 @@ namespace SugyeongKim.Util
 
         public virtual void OnDestroy ()
         {
+            Dispose ();
+        }
+
+        public virtual void Dispose ()
+        {
             _cachedInstanceBool = false;
             _instance = null;
         }
-
-        public virtual void Dispose () { }
     }
 }
