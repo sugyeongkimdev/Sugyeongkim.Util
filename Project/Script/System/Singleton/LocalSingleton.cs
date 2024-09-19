@@ -19,7 +19,7 @@ namespace SugyeongKim.Util
             }
         }
 
-        protected static T FindCachedInstance ()
+        public static T FindCachedInstance ()
         {
             if (_cachedInstanceBool)
             {
@@ -34,9 +34,9 @@ namespace SugyeongKim.Util
             return _instance;
         }
 
-        private static bool IsValid ()
+        public static bool IsValid ()
         {
-            return _instance && ReferenceEquals (_instance, null) == false;
+            return _instance && (ReferenceEquals (_instance, null) == false);
         }
 
         //==========================================================//

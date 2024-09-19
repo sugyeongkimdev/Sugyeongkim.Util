@@ -1,7 +1,11 @@
 {
-    "name" : "com.sugyeongkim.util",
+    "name": "com.sugyeongkim.util",
     "displayName": "SugyeongKim Util",
-    "author": { "name": "SugyeongKim", "url": "https://github.com/sugyeongkimdev" },
+    "author": 
+    {
+        "name": "SugyeongKim",
+        "url": "https://github.com/sugyeongkimdev"
+    },
     "version": "1.0.0",
     "description": "https://github.com/sugyeongkimdev/Sugyeongkim.Util",
     "license": "MIT",

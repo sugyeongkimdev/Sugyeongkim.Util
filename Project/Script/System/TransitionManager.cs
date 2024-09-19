@@ -5,21 +5,6 @@ using UnityEngine;
 
 public class TransitionManager : GlobalSingleton<TransitionManager>
 {
-    // 예시
-    public void Example ()
-    {
-        // 씬 전환시 화면이동 효과
-        SceneControlManager
-            .LoadScene (
-                "Lobby",
-                SceneControlManager.emptySceneName,
-                inObservable: () => TransitionManager.instance.FadeIn (),
-                outObservable: () => TransitionManager.instance.FadeOut ()
-            ).Subscribe ();
-    }
-
-    //==========================================================//
-
     public CanvasGroup transitionCanvasGroup;
 
     //==========================================================//

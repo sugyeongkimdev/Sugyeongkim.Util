@@ -11,7 +11,7 @@ public class DataParam<K> : Dictionary<K, object>, IDisposable
     }
 
     // 파라미터 얻기
-    public bool Get<V> (K key, out V value)
+    public bool GetParma<V> (K key, out V value)
     {
         if (this.TryGetValue (key, out object objValue) && objValue is V castValue)
         {
@@ -22,8 +22,8 @@ public class DataParam<K> : Dictionary<K, object>, IDisposable
         return false;
     }
 
-    // 파라미터 지우기, 형식상 작성
-    public new bool Remove (K key)
+    // 파라미터 지우기
+    public bool RemoveParma (K key)
     {
         return this.Remove (key);
     }
