@@ -7,16 +7,17 @@ namespace SugyeongKim.Util
 {
     public class UICanvasManager : GlobalSingleton<UICanvasManager>
     {
-        [SerializeField] private Camera uiCamera;
+        [field: SerializeField, Header ("Common")] public Camera uiCamera { get; private set; }
+        [field: SerializeField] public Canvas canvas { get; private set; }
+
+        //[field: SerializeField, Header("ETC")] public CanvasScaler scaler { get; private set; }
+        //[field: SerializeField] public GraphicRaycaster raycaster { get; private set; }
+        //[field: SerializeField] public EventSystem uiEventSystem { get; private set; }
+
+        [field: SerializeField, Header("Layers")] public Transform BackLayer { get; private set; }
+        [field: SerializeField] public Transform PopupLayer { get; private set; }
+        [field: SerializeField] public Transform SystemLayer { get; private set; }
         public static Camera UICamera => instance.uiCamera;
-
-        public Canvas canvas;
-        public CanvasScaler scaler;
-        public GraphicRaycaster raycaster;
-
-        [field: SerializeField] public Transform backLayer { get; private set; }
-        [field: SerializeField] public Transform popupLayer { get; private set; }
-        [field: SerializeField] public Transform systemLayer { get; private set; }
 
         //============================================//
 

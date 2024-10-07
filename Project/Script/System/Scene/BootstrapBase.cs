@@ -1,6 +1,7 @@
 using System;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SugyeongKim.Util
 {
@@ -11,7 +12,7 @@ namespace SugyeongKim.Util
         {
             private void Start ()
             {
-                BootstrapBase.instance.BootstrapInitAsObservable ()
+                BootstrapBase.BootstrapAsObservable ()
                     .Subscribe (_ =>
                     {
                          callback
@@ -22,8 +23,8 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        public virtual string BootstrapScene => "util.bootstrap";
-        public virtual string FirstScene => "Title";
+        public static string BootstrapScene = "util.bootstrap";
+        public virtual string NextScene => "Title";
 
         private void Start ()
         {
@@ -32,11 +33,12 @@ namespace SugyeongKim.Util
 
         public virtual void OnStart ()
         {
-            BootstrapAsObservable()
+            BootstrapAsObservable ()
                 .Where (isMoveNext => isMoveNext)
-                // bootstarb scene -> main scene
+
+                // Bootstarb scene -> Next Scene
                 .SelectMany (_ => SceneControlManager.LoadSceneAsObservable (
-                    FirstScene,
+                    loadScene: NextScene,
                     inObservable: TransitionManager.instance.FadeIn (),
                     outObservable: TransitionManager.instance.FadeOut ()
                 ))
@@ -59,31 +61,38 @@ namespace SugyeongKim.Util
             return Observable.ReturnUnit ()
                 .Do (_ => UtilLog.Log ("Bootstrap start."))
 
-                // load bootstrap scene
-                .SelectMany (_ => TryBootstrapSceneLoad ())
+                // boostrap load
+                // 부트스트랩씬이 없을경우 씬 로드하기 (※ instance를 사용해선 안됨)
+                .SelectMany (_ =>
+                {
+                    // 부트스트랩이 이미 있으면 무시
+                    if (BootstrapBase.IsValid () || BootstrapBase.FindCachedInstance ())
+                    {
+                        SceneControlManager.CurrentSceneName = BootstrapScene;
+                        return Observable.ReturnUnit ();
+                    }
+                    // 부트스트랩 씬 로드
+                    return SceneControlManager.LoadSceneAsObservable (BootstrapScene);
+                })
 
-                // execute bootstrap Init
+                // bootstrap Init
                 .SelectMany (_ => instance.OnBootstrapAsObservable ())
 
                 // singleton init
                 .SelectMany (_ => SingletonTool.InitGlobalSingletonAsObservable ())
 
-                .Do (_ => UtilLog.Log ("Bootstrap complete."))
-                .Select (_ => true);            
-        }
+                // boostrap unload
+                .SelectMany (_ =>
+                {
+                    if (SceneManager.sceneCount > 1)
+                    {
+                        return SceneControlManager.UnloadSceneAsObservable (BootstrapScene);
+                    }
+                    return Observable.ReturnUnit ();
+                })
 
-        // 부트스트랩씬이 없을경우 씬 로드하기
-        private static IObservable<Unit> TryBootstrapSceneLoad ()
-        {
-            if (BootstrapBase.IsValid ())
-            {
-                return Observable.ReturnUnit ();
-            }
-            if (BootstrapBase.FindCachedInstance())
-            {
-                return Observable.ReturnUnit ();
-            }            
-            return SceneControlManager.LoadSceneAsObservable (instance.BootstrapScene);
+                .Do (_ => UtilLog.Log ("Bootstrap complete."))
+                .Select (_ => true);
         }
 
         //============================================//

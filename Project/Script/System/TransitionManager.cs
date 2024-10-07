@@ -3,6 +3,7 @@ using SugyeongKim.Util;
 using UniRx;
 using UnityEngine;
 
+// 전환 매니저
 public class TransitionManager : GlobalSingleton<TransitionManager>
 {
     public CanvasGroup transitionCanvasGroup;

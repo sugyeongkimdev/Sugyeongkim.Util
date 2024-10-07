@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace SugyeongKim.Util
@@ -10,7 +11,7 @@ namespace SugyeongKim.Util
         // onDestroy시 토글되는 bool로 성능 최적화 시도
         protected static bool _cachedInstanceBool;
 
-        protected static T _instance;
+        protected static T _instance { get; set; }
         public static T instance
         {
             get
@@ -19,6 +20,7 @@ namespace SugyeongKim.Util
             }
         }
 
+        // 캐시 찾기
         public static T FindCachedInstance ()
         {
             if (_cachedInstanceBool)
@@ -29,11 +31,17 @@ namespace SugyeongKim.Util
             _cachedInstanceBool = IsValid ();
             if (_cachedInstanceBool == false)
             {
-                _instance = FindObjectOfType<T> (true);
+                var findAll = FindObjectsOfType<T> (true);
+                if(findAll.Length > 1)
+                {
+                    UtilLog.Error ($"Many Same Global Sington Type : {typeof(T)} [{findAll.Length}]");
+                }
+                _instance = findAll.FirstOrDefault();
             }
             return _instance;
         }
 
+        // 유효성 체크
         public static bool IsValid ()
         {
             return _instance && (ReferenceEquals (_instance, null) == false);

@@ -7,7 +7,13 @@ namespace SugyeongKim.Util
 {
     public class SceneControlManager : GlobalSingleton<SceneControlManager>
     {
-        private static string CurrentSceneName = "";
+        // Empty 씬 이름
+        public const string EmptySceneName = "EmptyScene";
+
+        //==========================================================//
+
+        // 현재 씬 이름
+        public static string CurrentSceneName { get; set; } = "";
 
         //==========================================================//
 
@@ -29,23 +35,18 @@ namespace SugyeongKim.Util
             return Observable.ReturnUnit ()
                 // TransitionManager in 실행
                 .SelectMany (_ => inObservable)
-                .Do (_ => SceneManager.CreateScene ("EmptyScene"))
-
+                // Empty 씬 생성
+                .Do (_ => SceneManager.CreateScene (EmptySceneName))
                 .DelayFrame (33)
                 // 이전 씬 해제
                 .SelectMany (_ => UnloadSceneAsObservable (unloadBefore ? CurrentSceneName : ""))
                 // 목표 씬 로드
                 .SelectMany (_ => LoadSceneAsObservable (loadScene, loadSceneMode))
-                // 로딩 씬 해제
-                .SelectMany (_ => UnloadSceneAsObservable ("EmptyScene"))
-                //.Do (_ =>
-                //{
-                //    if (loadTargetSceneName != bootstrapSceneName)
-                //    {
-                //        CurrentSceneName = loadTargetSceneName;
-                //    }
-                //})
+                .Do (_ => { CurrentSceneName = loadScene; })
+                // Empty 씬 해제
+                .SelectMany (_ => UnloadSceneAsObservable (EmptySceneName))
                 .DelayFrame (33)
+                // TransitionManager out 실행
                 .SelectMany (_ => outObservable)
                 .AsUnitObservable ();
         }
@@ -53,23 +54,34 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 씬 로드
-        private static IObservable<AsyncOperation> LoadSceneAsObservable (string sceneName, LoadSceneMode mode)
+        public static IObservable<AsyncOperation> LoadSceneAsObservable (string sceneName, LoadSceneMode mode)
         {
             var operation = SceneManager.LoadSceneAsync (sceneName, mode);
+            if (operation == null)
+            {
+                UtilLog.Error ($"invalid sceneName : {sceneName}");
+                return Observable.Return<AsyncOperation> (default);
+            }
+
             operation.allowSceneActivation = true;
             return operation.AsAsyncOperationObservable ();
         }
 
         // 씬 해제
-        private static IObservable<Unit> UnloadSceneAsObservable (string sceneName)
+        public static IObservable<Unit> UnloadSceneAsObservable (string sceneName)
         {
             if (string.IsNullOrWhiteSpace (sceneName))
             {
                 return Observable.ReturnUnit ();
             }
-            UnloadSceneOptions param = UnloadSceneOptions.None;
 
-            var operation = SceneManager.UnloadSceneAsync (sceneName, param);
+            var operation = SceneManager.UnloadSceneAsync (sceneName);
+            if (operation == null)
+            {
+                UtilLog.Error ($"invalid sceneName : {sceneName}");
+                return Observable.ReturnUnit ();
+            }
+
             operation.allowSceneActivation = true;
             return operation.AsAsyncOperationObservable ().AsUnitObservable ();
         }

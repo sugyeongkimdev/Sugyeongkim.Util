@@ -11,33 +11,31 @@ namespace SugyeongKim.Util
     public static class SingletonTool
     {
         private const string INSTANCE_NAME = "instance";
-        private const string ROOT_NAME = "__GlobalSingleton__";
-
         private static Type GlobalType = typeof (GlobalSingleton<>);
         //private static Type LocalType = typeof (LocalSingleton<>);
 
         //==========================================================//
 
         // 싱글톤의 부모 트랜스폼
-        private static GameObject _rootTrnas;
+        private static GameObject _rootGo;
         public static Transform RootTrnas
         {
             get
             {
-                if (_rootTrnas == false)
+                if (_rootGo == false)
                 {
                     var parent = GameObject.FindObjectOfType<GlobalSingletonParent> ();
                     if (parent)
                     {
-                        _rootTrnas = parent.gameObject;
+                        _rootGo = parent.gameObject;
                     }
                     else
                     {
-                        _rootTrnas = new GameObject (ROOT_NAME);
+                        _rootGo = new GameObject ($"__{nameof(GlobalSingletonParent)}__");
                     }
-                    MonoBehaviour.DontDestroyOnLoad (_rootTrnas);
+                    MonoBehaviour.DontDestroyOnLoad (_rootGo);
                 }
-                return _rootTrnas.transform;
+                return _rootGo.transform;
             }
         }
 
