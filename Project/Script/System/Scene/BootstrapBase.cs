@@ -117,7 +117,7 @@ namespace SugyeongKim.Util
                 {
                     // set bootsrap canvas resolution
                     // TODO : 해상도는 상수가 아니라 Scriptableobject로 관리되어야함
-                    UICanvasManager.SetCanvasScaler (UICanvasManager.instance.canvas);
+                    GlobalCanvasUIManager.SetCanvasScaler (GlobalCanvasUIManager.instance.globalCanvas);
 
                 });
 

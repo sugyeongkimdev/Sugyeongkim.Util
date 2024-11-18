@@ -15,7 +15,7 @@ namespace SugyeongKim.Util
         }
 
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
-        public bool enableBackspaceClose { get; protected set; } = true;
+        public virtual bool enableBackspaceClose { get; set; } = true;
 
         // 팝업 닫기 (unirx)
         public virtual IObservable<Unit> CloseAsObservable ()

@@ -54,7 +54,7 @@ namespace SugyeongKim.Util
                 .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<Popup> (
                     popupAddressPath,
                     onDestroy,
-                    UICanvasManager.instance.PopupLayer))
+                    GlobalCanvasUIManager.instance.PopupLayer))
                 .Do (popup =>
                 {
                     IsCreatingPopup = false;

@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 109702092}
   - component: {fileID: 109702091}
   m_Layer: 0
-  m_Name: bootstrapEventSystem
+  m_Name: GlobalCanvasUI_EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 126078749}
   - component: {fileID: 126078748}
   m_Layer: 5
-  m_Name: bootstrapUICamera
+  m_Name: GlobalCanvasUI_Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 1028391210}
   - component: {fileID: 1028391211}
   m_Layer: 0
-  m_Name: GlobalUI
+  m_Name: GlobalCanvasUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -515,11 +515,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1028391209}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1252ac6b20612ef438ac5811da3e2fb5, type: 3}
+  m_Script: {fileID: 11500000, guid: 16c24ae21be23f5408b4eae697f8752f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <uiCamera>k__BackingField: {fileID: 126078749}
-  <canvas>k__BackingField: {fileID: 1869149581}
+  <globalCanvasCamera>k__BackingField: {fileID: 126078749}
+  <globalCanvas>k__BackingField: {fileID: 1869149581}
   <BackLayer>k__BackingField: {fileID: 329896217}
   <PopupLayer>k__BackingField: {fileID: 1149506970}
   <SystemLayer>k__BackingField: {fileID: 137402389}
@@ -826,7 +826,7 @@ GameObject:
   - component: {fileID: 1869149580}
   - component: {fileID: 1869149579}
   m_Layer: 5
-  m_Name: GlobalUICanvas
+  m_Name: GlobalCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
