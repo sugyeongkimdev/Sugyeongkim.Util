@@ -86,6 +86,7 @@ namespace SugyeongKim.Util
         // 글로벌 싱글톤을 상속받는 모든 클래스의 instnace 반환
         private static IEnumerable<object> GetGlobalSingletonInstnaceArr ()
         {
+            var instanceFlag = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             var searchAllSingleton = SearchInheritanceClassType ();
             return searchAllSingleton
                 // GlobalSingletonIgnoreAttribute 어트리뷰트를 받은 global sington은 초기화, 생성을 모두 무시함
@@ -96,11 +97,16 @@ namespace SugyeongKim.Util
                 })
                 .Select (currentType =>
                 {
-                    // global 싱글톤 제네릭 타입 생성
-                    var currentSingleton = GlobalType.MakeGenericType (currentType);
-                    // global 싱글톤 인스턴스 접근 및 생성, 접근시 property에 의해 자동생성됨
-                    var instance = currentSingleton.GetProperty (INSTANCE_NAME).GetValue (null);
-                    return instance;
+                    // instance 찾기
+                    if (TryFindProperty (currentType, null, INSTANCE_NAME, instanceFlag, out object instance))
+                    {
+                        return instance;
+                    }
+                    else
+                    {
+                        Console.WriteLine ($"Property '{INSTANCE_NAME}'");
+                        return null;
+                    }
                 });
 
         }
@@ -118,7 +124,7 @@ namespace SugyeongKim.Util
                     while (type != null && type != typeof (object))
                     {
                         var cur = type.IsGenericType ? type.GetGenericTypeDefinition () : type;
-                        if (GlobalType == cur)
+                        if (cur == GlobalType)
                         {
                             bool match = true;
                             // 추상 클래스 무시 여부
@@ -133,6 +139,32 @@ namespace SugyeongKim.Util
                 });
 
             return findTypeArr;
+        }
+
+        //==========================================================//
+
+        // https://www.codeproject.com/Articles/696524/Accessing-Private-Fields-in-Inherited-Classes
+        // 부모까지 거슬러 올라가면서 property를 이름으로 찾기
+        public static bool TryFindProperty<T> (Type type, object instance, string fieldName, BindingFlags flags, out T value)
+        {
+            Type t = type;
+            bool found = false;
+            value = default;
+            do
+            {
+                var property = t.GetProperty (fieldName, flags);
+                if (property != null)
+                {
+                    value = (T)property.GetValue (instance);
+                    found = true;
+                }
+                else
+                {
+                    t = t.BaseType;
+                }
+            } while (found == false && t != null);
+
+            return found;
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace SugyeongKim.Util
 {
-    public class BootstrapBase : GlobalSingleton<BootstrapBase>
+    public abstract class BootstrapBase : GlobalSingleton<BootstrapBase>
     {
         /*
         public class ExampleScene : MonoBehaviour
@@ -23,27 +23,12 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        public static string BootstrapScene = "util.bootstrap";
-        public virtual string NextScene => "Title";
+        // 부트스트랩 씬 이름
+        public static string BootstrapSceneName = "util.bootstrap";
 
-        private void Start ()
-        {
-            OnStart ();
-        }
+        // 부트스트랩이 끝난 뒤 이동할 씬 이름
+        public abstract string NextSceneName { get; }
 
-        public virtual void OnStart ()
-        {
-            BootstrapAsObservable ()
-                .Where (isMoveNext => isMoveNext)
-
-                // Bootstarb scene -> Next Scene
-                .SelectMany (_ => SceneControlManager.LoadSceneAsObservable (
-                    loadScene: NextScene,
-                    inObservable: TransitionManager.instance.FadeIn (),
-                    outObservable: TransitionManager.instance.FadeOut ()
-                ))
-                .Subscribe ();
-        }
 
         //============================================//
 
@@ -68,11 +53,11 @@ namespace SugyeongKim.Util
                     // 부트스트랩이 이미 있으면 무시
                     if (BootstrapBase.IsValid () || BootstrapBase.FindCachedInstance ())
                     {
-                        SceneControlManager.CurrentSceneName = BootstrapScene;
+                        SceneControlManager.CurrentSceneName = BootstrapSceneName;
                         return Observable.ReturnUnit ();
                     }
                     // 부트스트랩 씬 로드
-                    return SceneControlManager.LoadSceneAsObservable (BootstrapScene);
+                    return SceneControlManager.LoadSceneAsObservable (BootstrapSceneName);
                 })
 
                 // bootstrap Init
@@ -86,7 +71,7 @@ namespace SugyeongKim.Util
                 {
                     if (SceneManager.sceneCount > 1)
                     {
-                        return SceneControlManager.UnloadSceneAsObservable (BootstrapScene);
+                        return SceneControlManager.UnloadSceneAsObservable (BootstrapSceneName);
                     }
                     return Observable.ReturnUnit ();
                 })
