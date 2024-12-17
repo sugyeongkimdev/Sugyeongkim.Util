@@ -42,6 +42,23 @@ namespace SugyeongKim.Util
         }
 
         //============================================//
+
+        // 생성된 팝업을 팝업 매니저에 추가
+        // TODO : 팝업 중복추가에 대한 처리를 해야함
+        public static IObservable<Result> AddPopup<Result> (PopupBase<Result> popup) where Result : new()
+        {
+            popupList.Add (popup);
+            popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
+            return popup.ShowAsObservable ();
+        }
+
+        public static void GetPopup<Popup> () where Popup : PopupBase
+        {
+
+        }
+
+        //============================================//
+
         // 팝업 열기, 닫힐때 Result 발행
         private static bool IsCreatingPopup;
         public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : PopupBase
@@ -58,7 +75,6 @@ namespace SugyeongKim.Util
                 .Do (popup =>
                 {
                     IsCreatingPopup = false;
-                    popupList.Add (popup);
                 });
         }
 

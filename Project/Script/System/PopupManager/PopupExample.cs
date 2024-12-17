@@ -32,7 +32,7 @@ namespace SugyeongKim.Util
         {
             return PopupManager.GetPopupAsObservable<PopupExample> ("PopupExampleAddressPath")
                 .Do (popup => popup.SetData (setting))
-                .SelectMany (pop => pop.ShowAsObservable ());
+                .SelectMany (popup => PopupManager.AddPopup (popup));
         }
 
         //============================================//

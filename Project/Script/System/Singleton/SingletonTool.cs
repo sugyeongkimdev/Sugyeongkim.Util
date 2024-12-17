@@ -10,6 +10,11 @@ namespace SugyeongKim.Util
     // 싱글톤 유틸 클래스
     public static class SingletonTool
     {
+        // 글로벌 싱글톤 초기화 완료 이벤트
+        public static BehaviorSubject<bool> OnCompleteSingletonInitSubject = new BehaviorSubject<bool>(false);
+
+        //==========================================================//
+
         private const string INSTANCE_NAME = "instance";
         private static Type GlobalType = typeof (GlobalSingleton<>);
         //private static Type LocalType = typeof (LocalSingleton<>);
@@ -75,6 +80,10 @@ namespace SugyeongKim.Util
 
                     .Concat ();
                 return Observable.WhenAll (initConcat)
+                    .Do (_ =>
+                    {
+                        OnCompleteSingletonInitSubject.OnNext (true);
+                    })
                     .TakeUntilDestroy (RootTrnas);
             }
 
