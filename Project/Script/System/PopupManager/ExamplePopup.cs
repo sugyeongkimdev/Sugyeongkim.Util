@@ -5,12 +5,12 @@ using UnityEngine;
 namespace SugyeongKim.Util
 {
     // 팝업 만들기 예시, 해당 컴포넌트를 게임오브젝트에 부착함
-    public class PopupExample : PopupBase<PopupExample.Setting, PopupExample.Result>
+    public class ExamplePopup : BasePopup<ExamplePopup.Setting, ExamplePopup.Result>
     {
         // 팝업 열기 예시
         public static void OpenMethod ()
         {
-            var setting = new PopupExample.Setting ()
+            var setting = new ExamplePopup.Setting ()
             {
                 setData1 = "Title",
                 setData2 = "Content",
@@ -28,9 +28,9 @@ namespace SugyeongKim.Util
                 Debug.Log (result.restunData3);
             });
         }
-        public static IObservable<PopupExample.Result> ShowPopupExampleAsObservable (PopupExample.Setting setting)
+        public static IObservable<ExamplePopup.Result> ShowPopupExampleAsObservable (ExamplePopup.Setting setting)
         {
-            return PopupManager.GetPopupAsObservable<PopupExample> ("PopupExampleAddressPath")
+            return PopupManager.GetPopupAsObservable<ExamplePopup> ("PopupExampleAddressPath")
                 .Do (popup => popup.SetData (setting))
                 .SelectMany (popup => PopupManager.AddPopup (popup));
         }

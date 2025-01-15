@@ -9,7 +9,7 @@ namespace SugyeongKim.Util
 {
     public class PopupManager : GlobalSingleton<PopupManager>
     {
-        public static List<PopupBase> popupList { get; private set; }
+        public static List<BasePopup> popupList { get; private set; }
 
         // 모든 팝업이 뒤로가기로 닫을 수 있는지 여부
         public static bool enableBackspaceClose { get; set; } = true;
@@ -21,7 +21,7 @@ namespace SugyeongKim.Util
         private IDisposable updateDisposable;
         public override IObservable<Unit> InitAsObservable ()
         {
-            popupList = new List<PopupBase> ();
+            popupList = new List<BasePopup> ();
 
             // 팝업 뒤로가기로 닫기 기능 추가
             updateDisposable?.Dispose ();
@@ -30,7 +30,7 @@ namespace SugyeongKim.Util
                 // 뒤로가기 클릭
                 .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupList.Any ())
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (_ => popupList.Last ().enableBackspaceClose)
+                .Where (_ => popupList.Last ().EnableBackspaceClose)
                 // 뒤로가기로 팝업이 닫힌 경우 해당 이벤트 실행, 보통 뒤로가기 닫기 사운드 출력용일듯
                 .Do (_ => popupBackspaceCloseAction?.Invoke ())
                 // 닫기
@@ -45,14 +45,14 @@ namespace SugyeongKim.Util
 
         // 생성된 팝업을 팝업 매니저에 추가
         // TODO : 팝업 중복추가에 대한 처리를 해야함
-        public static IObservable<Result> AddPopup<Result> (PopupBase<Result> popup) where Result : new()
+        public static IObservable<Result> AddPopup<Result> (BasePopup<Result> popup) where Result : new()
         {
             popupList.Add (popup);
             popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
             return popup.ShowAsObservable ();
         }
 
-        public static void GetPopup<Popup> () where Popup : PopupBase
+        public static void GetPopup<Popup> () where Popup : BasePopup
         {
 
         }
@@ -61,7 +61,7 @@ namespace SugyeongKim.Util
 
         // 팝업 열기, 닫힐때 Result 발행
         private static bool IsCreatingPopup;
-        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : PopupBase
+        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : BasePopup
         {
             return Observable.ReturnUnit ()
                 .Do (_ =>
@@ -79,7 +79,7 @@ namespace SugyeongKim.Util
         }
 
         // 팝업 닫기
-        public static bool TryClosePopup (PopupBase popup, bool isReleseFields = true)
+        public static bool TryClosePopup (BasePopup popup, bool isReleseFields = true)
         {
             if (IsCreatingPopup)
             {

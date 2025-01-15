@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SugyeongKim.Util
 {
-    public abstract class PopupBase : MonoBehaviour
+    public abstract class BasePopup : MonoBehaviour
     {
         public class BaseSetting
         {
@@ -14,8 +14,12 @@ namespace SugyeongKim.Util
             public bool isOkClick;
         }
 
+        //============================================//
+
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
-        public virtual bool enableBackspaceClose { get; set; } = true;
+        public virtual bool EnableBackspaceClose { get; set; } = true;
+
+        //============================================//
 
         // 팝업 닫기 (unirx)
         public virtual IObservable<Unit> CloseAsObservable ()
@@ -32,7 +36,7 @@ namespace SugyeongKim.Util
 
     //============================================//
 
-    public abstract class PopupBase<Result> : PopupBase where Result : new()
+    public abstract class BasePopup<Result> : BasePopup where Result : new()
     {
         // 팝업 닫힐시 결과값
         protected Result result = new Result ();
@@ -88,7 +92,7 @@ namespace SugyeongKim.Util
 
     //============================================//
 
-    public abstract class PopupBase<Setting, Result> : PopupBase<Result> where Result : new()
+    public abstract class BasePopup<Setting, Result> : BasePopup<Result> where Result : new()
     {
         protected Setting setting;
 
