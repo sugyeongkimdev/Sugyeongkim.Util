@@ -12,7 +12,7 @@ namespace SugyeongKim.Util
         public static List<BasePopup> popupList { get; private set; }
 
         // 모든 팝업이 뒤로가기로 닫을 수 있는지 여부
-        public static bool enableBackspaceClose { get; set; } = true;
+        public static bool EnableBackspaceClose_Global { get; set; } = true;
 
         public static Action popupBackspaceCloseAction { get; set; }
 
@@ -26,11 +26,11 @@ namespace SugyeongKim.Util
             // 팝업 뒤로가기로 닫기 기능 추가
             updateDisposable?.Dispose ();
             updateDisposable = this.UpdateAsObservable ()
-                .Where (_ => enableBackspaceClose)
+                .Where (_ => EnableBackspaceClose_Global)
                 // 뒤로가기 클릭
                 .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupList.Any ())
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (_ => popupList.Last ().EnableBackspaceClose)
+                .Where (_ => popupList.Last ().EnableBackspaceClose_Local)
                 // 뒤로가기로 팝업이 닫힌 경우 해당 이벤트 실행, 보통 뒤로가기 닫기 사운드 출력용일듯
                 .Do (_ => popupBackspaceCloseAction?.Invoke ())
                 // 닫기

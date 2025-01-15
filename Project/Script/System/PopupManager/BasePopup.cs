@@ -17,7 +17,7 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
-        public virtual bool EnableBackspaceClose { get; set; } = true;
+        public virtual bool EnableBackspaceClose_Local { get; set; } = true;
 
         //============================================//
 
