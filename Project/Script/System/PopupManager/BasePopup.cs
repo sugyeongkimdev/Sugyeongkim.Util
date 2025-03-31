@@ -17,7 +17,7 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
-        public virtual bool EnableBackspaceClose_Local { get; set; } = true;
+        public bool EnableBackspaceClose_Local { get; set; } = true;
 
         //============================================//
 
@@ -27,10 +27,11 @@ namespace SugyeongKim.Util
             PopupManager.TryClosePopup (this);
             return Observable.ReturnUnit ();
         }
+
         // 팝업 닫기
         public virtual void Close ()
         {
-            PopupManager.TryClosePopup (this);
+            CloseAsObservable().Subscribe().AddTo(this);
         }
     }
 
@@ -56,7 +57,6 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 팝업 닫기 (unirx)
-        private bool isClosing;
         public override IObservable<Unit> CloseAsObservable ()
         {
             return Observable.ReturnUnit ()
@@ -95,7 +95,7 @@ namespace SugyeongKim.Util
     public abstract class BasePopup<Setting, Result> : BasePopup<Result> where Result : new()
     {
         protected Setting setting;
-
+        
         //============================================//
 
         // 팝업 데이터 넣기
