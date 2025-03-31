@@ -10,10 +10,14 @@ public class SoundManager : GlobalSingleton<SoundManager>
     private static List<AudioSource> audioSourcePool = new List<AudioSource>();
     private static int poolSize = 10;
 
+    //============================================//
+
     // 볼륨 설정
     private static float masterVolume = 1f;
     private static float bgmVolume = 1f;
     private static float sfxVolume = 1f;
+
+    //============================================//
 
     public override IObservable<Unit> InitAsObservable()
     {
@@ -42,7 +46,7 @@ public class SoundManager : GlobalSingleton<SoundManager>
     }
 
     // SFX 재생
-    public static void PlaySFX(AudioClip clip, bool loop = false)
+    public static void PlayEFF(AudioClip clip, bool loop = false)
     {
         var audioSource = GetAvailableAudioSource();
         if (audioSource != null)
