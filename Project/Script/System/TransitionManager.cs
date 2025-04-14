@@ -78,39 +78,47 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
             .Do (_ => transitionAction?.Invoke ())
             .SelectMany (_ => FadeOut ());
     }
-    public IObservable<Unit> FadeIn ()
-    {
-        Clear ();
-        transitionCanvasGroup.gameObject.SetActive (true);
 
-        return Observable
+    public IObservable<Unit> FadeIn (float speed = 25f)
+    {
+        // 구독시 실행
+        return Observable.Defer (() => Observable
             .Create<Unit> (ob =>
             {
+                // 초기화
+                Clear ();
+                transitionCanvasGroup.gameObject.SetActive (true);
+
+                // 애니메이션
                 return Observable.IntervalFrame (1)
                     .AsUnitObservable ()
                     .Subscribe (_ =>
                     {
-                        transitionCanvasGroup.alpha += 5f * Time.deltaTime;
+                        transitionCanvasGroup.alpha += speed * Time.deltaTime;
                         if (transitionCanvasGroup.alpha >= 1f)
                         {
                             ob.OnNext (Unit.Default);
                             ob.OnCompleted ();
                         }
                     });
-            });
+            }));
     }
-    public IObservable<Unit> FadeOut ()
+
+    public IObservable<Unit> FadeOut (float speed = 25f)
     {
-        transitionCanvasGroup.alpha = 1f;
-        return Observable
+        // 구독시 실행
+        return Observable.Defer (() => Observable
             .Create<Unit> (ob =>
             {
-                return Observable.IntervalFrame (1, FrameCountType.Update)
-                    .TakeWhile (_ => transitionCanvasGroup.alpha > 0f)
+                // 초기화
+                transitionCanvasGroup.alpha = 1f;
+
+                // 애니메이션
+                return Observable.IntervalFrame (1)
                     .AsUnitObservable ()
                     .Subscribe (_ =>
                     {
-                        transitionCanvasGroup.alpha -= 5f * Time.deltaTime;
+                        transitionCanvasGroup.alpha -= speed * Time.deltaTime;
                         if (transitionCanvasGroup.alpha <= 0f)
                         {
                             ob.OnNext (Unit.Default);
@@ -121,6 +129,6 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
             .Do (_ =>
             {
                 Clear ();
-            });
+            }));
     }
 }

@@ -21,7 +21,9 @@ namespace SugyeongKim.Util
             string loadScene,
             bool unloadBefore = true,
             LoadSceneMode loadSceneMode = LoadSceneMode.Additive,
+            // 로드시 실행
             IObservable<Unit> inObservable = null,
+            // 언로드시 실행
             IObservable<Unit> outObservable = null)
         {
             // in, out
@@ -83,7 +85,16 @@ namespace SugyeongKim.Util
             }
 
             operation.allowSceneActivation = true;
-            return operation.AsAsyncOperationObservable ().AsUnitObservable ();
+            return operation.AsAsyncOperationObservable ()
+                .Do (_ =>
+                {
+                    if (CurrentSceneName == sceneName)
+                    {
+                        // 현재 활성화된 씬 가져오기
+                        CurrentSceneName = SceneManager.GetActiveScene ().name;
+                    }
+                })
+                .AsUnitObservable ();
         }
 
         //============================================//

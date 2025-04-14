@@ -9,32 +9,28 @@ namespace SugyeongKim.Util
 {
     public class PopupManager : GlobalSingleton<PopupManager>
     {
-        public static List<BasePopup> popupList { get; private set; }
+        public static OrderedDictionary<Type, BasePopup> popupDic { get; private set; } = new ();
 
         // 모든 팝업이 뒤로가기로 닫을 수 있는지 여부
         public static bool EnableBackspaceClose_Global { get; set; } = true;
-
-        public static Action popupBackspaceCloseAction { get; set; }
 
         //============================================//
 
         private IDisposable updateDisposable;
         public override IObservable<Unit> InitAsObservable ()
         {
-            popupList = new List<BasePopup> ();
-
             // 팝업 뒤로가기로 닫기 기능 추가
             updateDisposable?.Dispose ();
             updateDisposable = this.UpdateAsObservable ()
                 .Where (_ => EnableBackspaceClose_Global)
                 // 뒤로가기 클릭
-                .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupList.Any ())
+                .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupDic.Any ())
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (_ => popupList.Last ().EnableBackspaceClose_Local)
-                // 뒤로가기로 팝업이 닫힌 경우 해당 이벤트 실행, 보통 뒤로가기 닫기 사운드 출력용일듯
-                .Do (_ => popupBackspaceCloseAction?.Invoke ())
+                .Where (_ => popupDic.LastValue.EnableBackspaceClose_Local)
+                // 뒤로가기로 팝업이 닫힌 경우, 닫기 사운드 실행
+                .Do (_ => SoundManager.PlaySFX (SFXType.PopupClose))
                 // 닫기
-                .SelectMany (_ => popupList.Last ().CloseAsObservable ())
+                .SelectMany (_ => popupDic.LastValue.CloseAsObservable ())
                 .Subscribe ()
                 .AddTo (this);
 
@@ -43,67 +39,92 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        // 생성된 팝업을 팝업 매니저에 추가
-        // TODO : 팝업 중복추가에 대한 처리를 해야함
-        public static IObservable<Result> AddPopup<Result> (BasePopup<Result> popup) where Result : new()
+        // 팝업 매니저에 추가
+        public static void AddPopup (BasePopup popup, bool ignoreAlert = false)
         {
-            popupList.Add (popup);
             popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
-            return popup.ShowAsObservable ();
+            if (popupDic.TryAdd (popup.GetType(), popup) == false)
+            {
+                if (ignoreAlert == false)
+                {
+                    // 이미 존재하는 팝업인 경우, 기존 팝업을 닫고 새로 생성된 팝업을 추가
+                    UtilLog.Error ($"AddPopup : {popup.GetType ()} is already in PopupManager");
+                }
+            }
         }
 
-        public static void GetPopup<Popup> () where Popup : BasePopup
+        // 팝업 가져오기
+        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath) where Popup : BasePopup
         {
-
+            if (popupDic.TryGetValue (typeof(Popup), out var popup))
+            {
+                // 팝업이 이미 존재하는 경우, 팝업을 반환
+                return Observable.Return (popup as Popup);
+            }
+            else
+            {
+                // 팝업이 없을 경우, 팝업을 생성하고 팝업 매니저에 추가
+                return CreatePopupAsObservable<Popup> (popupAddressPath)
+                    .Do (popup =>
+                    {
+                        AddPopup (popup);
+                    });
+            }
         }
 
         //============================================//
 
-        // 팝업 열기, 닫힐때 Result 발행
+        // 팝업 생성
         private static bool IsCreatingPopup;
-        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath, GameObject onDestroy = null) where Popup : BasePopup
+        public static IObservable<Popup> CreatePopupAsObservable<Popup> (string popupAddressPath) where Popup : BasePopup
         {
             return Observable.ReturnUnit ()
                 .Do (_ =>
                 {
                     IsCreatingPopup = true;
                 })
+                // 팝업 생성
                 .SelectMany (_ => AddressablesManager.InstanctiateAsObservable<Popup> (
                     popupAddressPath,
-                    onDestroy,
+                    instance.gameObject,
                     GlobalCanvasUIManager.instance.PopupLayer))
                 .Do (popup =>
                 {
+                    //popup.PopupPath = popupAddressPath;
                     IsCreatingPopup = false;
                 });
         }
 
-        // 팝업 닫기
+        // 팝업 닫기 시도
         public static bool TryClosePopup (BasePopup popup, bool isReleseFields = true)
         {
             if (IsCreatingPopup)
             {
+                // 팝업 생성중에 닫기 시도한 경우
+                UtilLog.Error ($"TryClosePopup : {popup.GetType ()} is creating popup");
                 return false;
             }
-            for (int i = 0; i < popupList.Count; i++)
+
+            if (popupDic.ContainsKey (popup.GetType()) == false)
             {
-                if (popupList[i] == popup)
-                {
-                    var closePopup = popupList[i];
-                    popupList.RemoveAt (i);
-
-                    if (isReleseFields)
-                    {
-                        // 내부필드 해제
-                        popup.ReleaseFields ();
-                    }
-
-                    // addrsable instnace 해제
-                    AddressablesManager.ReleaseInstance (closePopup.gameObject);
-                    return true;
-                }
+                // 팝업매니저에 없던 팝업임
+                UtilLog.Error ($"TryClosePopup : {popup.GetType ()} is not in PopupManager");
             }
-            return false;
+            else
+            {
+                popupDic.Remove (popup.GetType());
+            }
+
+            // 내부필드 해제
+            if (isReleseFields)
+            {
+                popup.ReleaseFields ();
+            }
+
+            // addrsable instnace 해제
+            AddressablesManager.ReleaseInstance (popup.gameObject);
+
+            return true;
         }
     }
 }

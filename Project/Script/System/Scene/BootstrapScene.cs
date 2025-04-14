@@ -2,16 +2,15 @@ using SugyeongKim.Util;
 using System;
 using UniRx;
 
-// Bootstrap ±¸Çö
+// Bootstrap êµ¬í˜„
 public class BootstrapScene : BootstrapBase
 {
-    public override string NextSceneName => "TitleScene";
+    public override string NextSceneName => "IntroScene";
 
     private void Start ()
     {
         BootstrapAsObservable ()
             .Where (isMoveNext => isMoveNext)
-
             // Bootstarb scene -> Next Scene
             .SelectMany (_ => SceneControlManager.LoadSceneAsObservable (
                 loadScene: NextSceneName,

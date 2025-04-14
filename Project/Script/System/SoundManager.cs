@@ -1,14 +1,26 @@
 using SugyeongKim.Util;
-using UnityEngine;
+using System;
 using System.Collections.Generic;
 using UniRx;
-using System;
+using UnityEngine;
+
+public enum SFXType
+{
+    None,
+    CameraShutter,
+    CameraShutterSave,
+    PopupOpen,
+    PopupClose,
+}
 
 public class SoundManager : GlobalSingleton<SoundManager>
 {
     // 오디오 소스 풀
-    private static List<AudioSource> audioSourcePool = new List<AudioSource>();
+    private static List<AudioSource> audioSourcePool = new List<AudioSource> ();
     private static int poolSize = 10;
+
+    // SFX 사운드 캐시
+    private static Dictionary<SFXType, AudioClip> sfxSoundCache = new Dictionary<SFXType, AudioClip> ();
 
     //============================================//
 
@@ -19,47 +31,89 @@ public class SoundManager : GlobalSingleton<SoundManager>
 
     //============================================//
 
-    public override IObservable<Unit> InitAsObservable()
+    public override IObservable<Unit> InitAsObservable ()
     {
         // 오디오 소스 풀 초기화
         for (int i = 0; i < poolSize; i++)
         {
-            var audioSource = instance.gameObject.AddComponent<AudioSource>();
+            var audioSource = instance.gameObject.AddComponent<AudioSource> ();
             audioSource.playOnAwake = false;
-            audioSourcePool.Add(audioSource);
+            audioSourcePool.Add (audioSource);
         }
 
-        return base.InitAsObservable();
+        // 버튼 사운드 캐시 초기화
+        LoadButtonSounds ();
+
+        return base.InitAsObservable ();
     }
 
-    // BGM 재생
-    public static void PlayBGM(AudioClip clip, bool loop = true)
+    private static void LoadButtonSounds ()
     {
-        var audioSource = GetAvailableAudioSource();
+        foreach (SFXType type in Enum.GetValues (typeof (SFXType)))
+        {
+            if (type == SFXType.None)
+            {
+                continue;
+            }
+            string soundPath = $"SFX/{type}";
+            AudioClip clip = Resources.Load<AudioClip> (soundPath);
+            if (clip == null)
+            {
+                UtilLog.Error ($"invalid sound path : {soundPath}");
+            }
+            else
+            {
+                sfxSoundCache[type] = clip;
+            }
+        }
+    }
+
+    //============================================//
+
+    // SFX 사운드 재생
+    public static void PlaySFX (SFXType sfxType)
+    {
+        if (sfxType == SFXType.None)
+        {
+            UtilLog.Error("invalid");
+            return;
+        }
+        if (sfxSoundCache.TryGetValue (sfxType, out AudioClip clip))
+        {
+            PlaySE (clip);
+        }
+    }
+
+    //============================================//
+
+    // BGM 재생
+    public static void PlayBGM (AudioClip clip, bool loop = true)
+    {
+        var audioSource = GetAvailableAudioSource ();
         if (audioSource != null)
         {
             audioSource.clip = clip;
             audioSource.loop = loop;
             audioSource.volume = masterVolume * bgmVolume;
-            audioSource.Play();
+            audioSource.Play ();
         }
     }
 
     // SFX 재생
-    public static void PlayEFF(AudioClip clip, bool loop = false)
+    private static void PlaySE (AudioClip clip, bool loop = false)
     {
-        var audioSource = GetAvailableAudioSource();
+        var audioSource = GetAvailableAudioSource ();
         if (audioSource != null)
         {
             audioSource.clip = clip;
             audioSource.loop = loop;
             audioSource.volume = masterVolume * sfxVolume;
-            audioSource.Play();
+            audioSource.Play ();
         }
     }
 
     // 사용 가능한 오디오 소스 가져오기
-    private static AudioSource GetAvailableAudioSource()
+    private static AudioSource GetAvailableAudioSource ()
     {
         foreach (var audioSource in audioSourcePool)
         {
@@ -71,27 +125,29 @@ public class SoundManager : GlobalSingleton<SoundManager>
         return null;
     }
 
+    //============================================//
+
     // 볼륨 설정
-    public static void SetMasterVolume(float volume)
+    public static void SetMasterVolume (float volume)
     {
-        masterVolume = Mathf.Clamp01(volume);
-        UpdateAllVolumes();
+        masterVolume = Mathf.Clamp01 (volume);
+        UpdateAllVolumes ();
     }
 
-    public static void SetBGMVolume(float volume)
+    public static void SetBGMVolume (float volume)
     {
-        bgmVolume = Mathf.Clamp01(volume);
-        UpdateAllVolumes();
+        bgmVolume = Mathf.Clamp01 (volume);
+        UpdateAllVolumes ();
     }
 
-    public static void SetSFXVolume(float volume)
+    public static void SetSFXVolume (float volume)
     {
-        sfxVolume = Mathf.Clamp01(volume);
-        UpdateAllVolumes();
+        sfxVolume = Mathf.Clamp01 (volume);
+        UpdateAllVolumes ();
     }
 
     // 모든 오디오 소스의 볼륨 업데이트
-    private static void UpdateAllVolumes()
+    private static void UpdateAllVolumes ()
     {
         foreach (var audioSource in audioSourcePool)
         {
@@ -107,24 +163,26 @@ public class SoundManager : GlobalSingleton<SoundManager>
     }
 
     // 모든 사운드 정지
-    public static void StopAllSounds()
+    public static void StopAllSounds ()
     {
         foreach (var audioSource in audioSourcePool)
         {
-            audioSource.Stop();
+            audioSource.Stop ();
         }
     }
 
     // 특정 사운드 정지
-    public static void StopSound(AudioClip clip)
+    public static void StopSound (AudioClip clip)
     {
         foreach (var audioSource in audioSourcePool)
         {
             if (audioSource.clip == clip)
             {
-                audioSource.Stop();
+                audioSource.Stop ();
                 break;
             }
         }
     }
+
+    //============================================//
 }
