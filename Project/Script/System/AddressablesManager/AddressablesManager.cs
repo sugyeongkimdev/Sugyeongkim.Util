@@ -127,7 +127,9 @@ namespace SugyeongKim.Util
         {
 #if USE_ADDESSABLE
             return Observable.ReturnUnit ()
-                    .SelectMany (Addressables.InstantiateAsync (key, parent, instantiateInWorldSpace).ToUniTask ().ToObservable ())
+                    .SelectMany (Addressables.InstantiateAsync (key, parent, instantiateInWorldSpace)
+                        .ToUniTask ()
+                        .ToObservable ())
                     .Do (instance =>
                     {
                         if (position != default) { instance.transform.position = position; }

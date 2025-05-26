@@ -25,9 +25,16 @@ namespace SugyeongKim.Util
 
         //============================================//
 
+        private static Vector2 referenceResolution = new Vector2 (1280, 720);
+
         public override IObservable<Unit> InitAsObservable ()
         {
             return base.InitAsObservable ();
+        }
+
+        public void Update ()
+        {
+            SetCanvasScaler (instance.globalCanvas);
         }
 
         // canvas 해상도 설정
@@ -36,8 +43,8 @@ namespace SugyeongKim.Util
             var targetScaler = targetCanvas.GetComponent<CanvasScaler> ();
             targetScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             targetScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            targetScaler.referenceResolution = new Vector2 (1080, 1920);
-            targetScaler.matchWidthOrHeight = Screen.width > Screen.height ? 0 : 1;
+            targetScaler.referenceResolution = referenceResolution;
+            targetScaler.matchWidthOrHeight = Screen.width > Screen.height ? 1f : 0f;
         }
     }
 }
