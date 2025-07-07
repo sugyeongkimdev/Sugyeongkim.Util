@@ -4,11 +4,9 @@ using UnityEngine;
 
 namespace SugyeongKim.Util
 {
-    public abstract class BasePopup : MonoBehaviour
+    public abstract class Popup : MonoBehaviour
     {
-        public class BaseSetting
-        {
-        }
+        public class BaseSetting { }
         public class BaseResult
         {
             public bool isOkClick;
@@ -31,13 +29,13 @@ namespace SugyeongKim.Util
         // 팝업 닫기
         public virtual void Close ()
         {
-            CloseAsObservable().Subscribe().AddTo(this);
+            CloseAsObservable ().Subscribe ().AddTo (this);
         }
     }
 
     //============================================//
 
-    public abstract class BasePopup<Result> : BasePopup where Result : new()
+    public abstract class Popup<Result> : Popup where Result : new()
     {
         // 팝업 닫힐시 결과값
         protected Result result = new Result ();
@@ -92,10 +90,10 @@ namespace SugyeongKim.Util
 
     //============================================//
 
-    public abstract class BasePopup<Setting, Result> : BasePopup<Result> where Result : new()
+    public abstract class Popup<Result, Setting> : Popup<Result> where Result : new()
     {
         protected Setting setting;
-        
+
         //============================================//
 
         // 팝업 데이터 넣기

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SugyeongKim.Util
 {
     // 팝업 만들기 예시, 해당 컴포넌트를 게임오브젝트에 부착함
-    public class ExamplePopup : BasePopup<ExamplePopup.Setting, ExamplePopup.Result>
+    public class ExamplePopup : Popup<ExamplePopup.Result, ExamplePopup.Setting>
     {
         // 팝업 열기 예시
         public static void OpenMethod ()

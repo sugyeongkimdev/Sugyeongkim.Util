@@ -25,7 +25,7 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        private static Vector2 referenceResolution = new Vector2 (1280, 720);
+        private static Vector2 referenceResolution = new Vector2 (720, 1280);
 
         public override IObservable<Unit> InitAsObservable ()
         {

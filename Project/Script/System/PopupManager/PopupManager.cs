@@ -9,7 +9,7 @@ namespace SugyeongKim.Util
 {
     public class PopupManager : GlobalSingleton<PopupManager>
     {
-        public static OrderedDictionary<Type, BasePopup> popupDic { get; private set; } = new ();
+        public static OrderedDictionary<Type, Popup> popupDic { get; private set; } = new ();
 
         // 모든 팝업이 뒤로가기로 닫을 수 있는지 여부
         public static bool EnableBackspaceClose_Global { get; set; } = true;
@@ -40,9 +40,19 @@ namespace SugyeongKim.Util
         //============================================//
 
         // 팝업 매니저에 추가
-        public static void AddPopup (BasePopup popup, bool ignoreAlert = false)
+        public static void AddPopup (Popup popup, bool ignoreAlert = false)
         {
             popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
+            if(popup.transform is RectTransform rectTrans)
+            {
+                rectTrans.localScale = Vector3.one;         // 팝업의 스케일을 초기화
+                rectTrans.anchoredPosition= Vector2.zero;   // 위치 초기화
+                //rectTrans.anchorMin = Vector2.zero;         // 앵커 최소값 초기화
+                //rectTrans.anchorMax = Vector2.one;          // 앵커 최대값 초기화
+                rectTrans.offsetMin = Vector2.zero;
+                rectTrans.offsetMax = Vector2.zero;
+                rectTrans.pivot = new Vector2(0.5f, 0.5f);  // 피벗을 중앙으로 설정
+            }
             if (popupDic.TryAdd (popup.GetType(), popup) == false)
             {
                 if (ignoreAlert == false)
@@ -54,7 +64,7 @@ namespace SugyeongKim.Util
         }
 
         // 팝업 가져오기
-        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath) where Popup : BasePopup
+        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath) where Popup : Util.Popup
         {
             if (popupDic.TryGetValue (typeof(Popup), out var popup))
             {
@@ -76,7 +86,7 @@ namespace SugyeongKim.Util
 
         // 팝업 생성
         private static bool IsCreatingPopup;
-        public static IObservable<Popup> CreatePopupAsObservable<Popup> (string popupAddressPath) where Popup : BasePopup
+        public static IObservable<Popup> CreatePopupAsObservable<Popup> (string popupAddressPath) where Popup : Util.Popup
         {
             return Observable.ReturnUnit ()
                 .Do (_ =>
@@ -96,7 +106,7 @@ namespace SugyeongKim.Util
         }
 
         // 팝업 닫기 시도
-        public static bool TryClosePopup (BasePopup popup, bool isReleseFields = true)
+        public static bool TryClosePopup (Popup popup, bool isReleseFields = true)
         {
             if (IsCreatingPopup)
             {
