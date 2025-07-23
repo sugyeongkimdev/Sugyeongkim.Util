@@ -106,7 +106,7 @@ namespace SugyeongKim.Util
                 })
                 .Select (currentType =>
                 {
-                    // instance 찾기
+                    // local 찾기
                     if (TryFindProperty (currentType, null, INSTANCE_NAME, instanceFlag, out object instance))
                     {
                         return instance;

@@ -9,10 +9,10 @@ namespace SugyeongKim.Util
     {
         // GameObject bool check는 성능이 좋지 못함,
         // onDestroy시 토글되는 bool로 성능 최적화 시도
-        protected static bool _cachedInstanceBool;
+        protected static bool _cachedBool;
 
-        protected static T _instance { get; set; }
-        public static T instance
+        protected static T _local { get; set; }
+        public static T local
         {
             get
             {
@@ -20,38 +20,40 @@ namespace SugyeongKim.Util
             }
         }
 
+        //==========================================================//
+
         // 캐시 찾기
         public static T FindCachedInstance ()
         {
-            if (_cachedInstanceBool)
+            if (_cachedBool)
             {
-                return _instance;
+                return _local;
             }
 
-            _cachedInstanceBool = IsValid ();
-            if (_cachedInstanceBool == false)
+            _cachedBool = IsValid ();
+            if (_cachedBool == false)
             {
                 var findAll = FindObjectsOfType<T> (true);
                 if(findAll.Length > 1)
                 {
                     UtilLog.Error ($"Many Same Global Sington Type : {typeof(T)} [{findAll.Length}]");
                 }
-                _instance = findAll.FirstOrDefault();
+                _local = findAll.FirstOrDefault();
             }
-            return _instance;
+            return _local;
         }
 
         // 유효성 체크
         public static bool IsValid ()
         {
-            return _instance && (ReferenceEquals (_instance, null) == false);
+            return _local && (ReferenceEquals (_local, null) == false);
         }
 
         //==========================================================//
 
         public virtual void Awake ()
         {
-            _instance = IsValid () ? _instance : transform as T;
+            _local = IsValid () ? _local : transform as T;
         }
 
 
@@ -62,8 +64,8 @@ namespace SugyeongKim.Util
 
         public virtual void Dispose ()
         {
-            _cachedInstanceBool = false;
-            _instance = null;
+            _cachedBool = false;
+            _local = null;
         }
     }
 }
