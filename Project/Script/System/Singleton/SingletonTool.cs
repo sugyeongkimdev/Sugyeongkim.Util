@@ -15,7 +15,6 @@ namespace SugyeongKim.Util
 
         //==========================================================//
 
-        private const string INSTANCE_NAME = "instance";
         private static Type GlobalType = typeof (GlobalSingleton<>);
         //private static Type LocalType = typeof (LocalSingleton<>);
 
@@ -106,14 +105,16 @@ namespace SugyeongKim.Util
                 })
                 .Select (currentType =>
                 {
+                    var name = GlobalSingleton<BootstrapBase>.instanceName;
+
                     // local 찾기
-                    if (TryFindProperty (currentType, null, INSTANCE_NAME, instanceFlag, out object instance))
+                    if (TryFindProperty (currentType, null, name, instanceFlag, out object instance))
                     {
                         return instance;
                     }
                     else
                     {
-                        Console.WriteLine ($"Property '{INSTANCE_NAME}'");
+                        Console.WriteLine ($"Property '{name}'");
                         return null;
                     }
                 });

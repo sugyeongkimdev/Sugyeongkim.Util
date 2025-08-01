@@ -11,8 +11,8 @@ namespace SugyeongKim.Util
         // onDestroy시 토글되는 bool로 성능 최적화 시도
         protected static bool _cachedBool;
 
-        protected static T _local { get; set; }
-        public static T local
+        protected static T _instance { get; set; }
+        public static T instance
         {
             get
             {
@@ -27,7 +27,7 @@ namespace SugyeongKim.Util
         {
             if (_cachedBool)
             {
-                return _local;
+                return _instance;
             }
 
             _cachedBool = IsValid ();
@@ -38,22 +38,22 @@ namespace SugyeongKim.Util
                 {
                     UtilLog.Error ($"Many Same Global Sington Type : {typeof(T)} [{findAll.Length}]");
                 }
-                _local = findAll.FirstOrDefault();
+                _instance = findAll.FirstOrDefault();
             }
-            return _local;
+            return _instance;
         }
 
         // 유효성 체크
         public static bool IsValid ()
         {
-            return _local && (ReferenceEquals (_local, null) == false);
+            return _instance && (ReferenceEquals (_instance, null) == false);
         }
 
         //==========================================================//
 
         public virtual void Awake ()
         {
-            _local = IsValid () ? _local : transform as T;
+            _instance = IsValid () ? _instance : transform as T;
         }
 
 
@@ -65,7 +65,7 @@ namespace SugyeongKim.Util
         public virtual void Dispose ()
         {
             _cachedBool = false;
-            _local = null;
+            _instance = null;
         }
     }
 }
