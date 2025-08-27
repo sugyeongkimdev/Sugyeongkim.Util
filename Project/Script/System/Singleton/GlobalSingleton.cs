@@ -9,7 +9,7 @@ namespace SugyeongKim.Util
     {
         public static string instanceName => nameof (instance);
 
-        //==========================================================//
+        //============================================//
 
         private bool FirstOnce = true;
 
@@ -39,7 +39,7 @@ namespace SugyeongKim.Util
             }
         }
 
-        //==========================================================//
+        //============================================//
 
         // 싱글톤 초기화
         public virtual int InitOrder => 0;

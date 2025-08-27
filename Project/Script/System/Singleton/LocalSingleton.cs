@@ -20,7 +20,7 @@ namespace SugyeongKim.Util
             }
         }
 
-        //==========================================================//
+        //============================================//
 
         // 캐시 찾기
         public static T FindCachedInstance ()
@@ -49,7 +49,7 @@ namespace SugyeongKim.Util
             return _instance && (ReferenceEquals (_instance, null) == false);
         }
 
-        //==========================================================//
+        //============================================//
 
         public virtual void Awake ()
         {

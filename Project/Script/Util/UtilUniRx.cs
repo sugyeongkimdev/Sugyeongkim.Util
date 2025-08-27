@@ -31,7 +31,7 @@ public static class UtilUniRx
             .Select (list => list.First ());
     }
 
-    //==========================================================//
+    //============================================//
 
     // Observable.Concat 작동이 이상해서 만듬
     public static IObservable<Unit> FixConcat<T> (this IEnumerable<IObservable<T>> observables)

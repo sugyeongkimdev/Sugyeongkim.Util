@@ -24,8 +24,7 @@ namespace SugyeongKim.Util
             }
         }
 
-
-        //==========================================================/
+        //============================================================//
 
         // target component class 필드/프로퍼티 전부 해제
         public static void ReleaseFields<T> (this T releaseTarget) where T : Component

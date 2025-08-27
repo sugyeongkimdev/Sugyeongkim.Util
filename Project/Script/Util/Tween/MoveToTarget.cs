@@ -6,7 +6,7 @@ namespace SugyeongKim.Util
 
     public class MoveToTarget : MonoBehaviour
     {
-        //============================================================//
+        //============================================//
 
         [Header ("Animation Default")]
         public Transform target;
@@ -15,12 +15,12 @@ namespace SugyeongKim.Util
         [Range (-10, 10)] public float dirVal = 0f;
         public AnimationCurve mainCurve = AnimationCurve.Linear (0, 0, 1f, 1f);
 
-        //============================================================//
+        //============================================//
 
         [HideInInspector] public Vector3 oriPos;
         public bool pause;
 
-        //============================================================//
+        //============================================//
 
         private void Awake ()
         {
@@ -51,8 +51,7 @@ namespace SugyeongKim.Util
             }
         }
 
-
-        //============================================================//
+        //============================================//
 
         // 재생
         public void Play ()
@@ -68,7 +67,7 @@ namespace SugyeongKim.Util
             enabled = false;
         }
 
-        //============================================================//
+        //============================================//
 
         protected float aniTime;
         public virtual void Cacaulate ()

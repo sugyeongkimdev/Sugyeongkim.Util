@@ -18,7 +18,7 @@ namespace SugyeongKim.Util
 
         private Dictionary<string, Subject<string>> _eventHandlerDic = new Dictionary<string, Subject<string>> ();
 
-        //============================================================//
+        //============================================//
 
         public Subject<string> Add (string key, Action<string> eventAction)
         {
@@ -41,7 +41,7 @@ namespace SugyeongKim.Util
             _eventHandlerDic.Clear ();
         }
 
-        //============================================================//
+        //============================================//
 
         // 유니티 애니메이션에서 등록할 키값을 넣어서 호출해야함 
         [UsedImplicitly]

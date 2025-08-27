@@ -25,12 +25,12 @@ namespace SugyeongKim.Util
             }
         }
 
-        //==========================================================//
+        //============================================//
 
         // 키 그룹 타입
         public enum KeyGroupType { None, Scene1, Scene2 }
 
-        //==========================================================//
+        //============================================//
 
         // 키 그룹 모음 dic
         public Dictionary<KeyGroupType, KeyGroup> keyGroupSetDic { get; private set; }
@@ -38,7 +38,7 @@ namespace SugyeongKim.Util
         // 현재 키 그룹
         public KeyGroupType currentKeyGroup { get; set; }
 
-        //==========================================================//
+        //============================================//
 
         private void OnEnable ()
         {
@@ -67,7 +67,7 @@ namespace SugyeongKim.Util
             }
         }
 
-        //==========================================================//
+        //============================================//
 
         // 키 그룹 가져오기
         public KeyGroup GetGroup (KeyGroupType groupType)
@@ -80,7 +80,7 @@ namespace SugyeongKim.Util
             return gorup ?? (keyGroupSetDic[groupType] = new KeyGroup ());
         }
 
-        //==========================================================//
+        //============================================//
 
         // 해당 그룹의 해당 키에 키 이벤트 넣기
         public void AddKey (KeyGroupType groupType, KeyCode key, Action keyAction)
@@ -98,7 +98,7 @@ namespace SugyeongKim.Util
             GetGroup (groupType).Remove (key);
         }
 
-        //==========================================================//
+        //============================================//
 
         // 이하 필요시 확장
         // public void RemoveGroup () { }

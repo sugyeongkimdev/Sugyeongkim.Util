@@ -10,12 +10,12 @@ namespace SugyeongKim.Util
         // Empty 씬 이름
         public const string EmptySceneName = "EmptyScene";
 
-        //==========================================================//
+        //============================================//
 
         // 현재 씬 이름
         public static string CurrentSceneName { get; set; } = "";
 
-        //==========================================================//
+        //============================================//
 
         public static IObservable<Unit> LoadSceneAsObservable (
             string loadScene,

@@ -75,7 +75,7 @@ namespace SugyeongKim.Util
                 DrawLine (cLerp + prev, nLerp + next);
             }
 
-            //==========================================================/
+            //============================================//
 
             // 월드 위치 얻기
             Vector3 WorldPos (int step)

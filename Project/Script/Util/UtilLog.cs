@@ -8,7 +8,7 @@ namespace SugyeongKim.Util
 {
     public static class UtilLog
     {
-        //==========================================================//
+        //============================================//
 
         // Conditional ("UNITY_EDITOR")]
         public static void Log (object logStr = default,
@@ -40,7 +40,7 @@ namespace SugyeongKim.Util
             Debug.LogException (e);
         }
 
-        //==========================================================//
+        //============================================//
 
         // 파일 경로 잘라서 마지막 가져오기
         private static string GetPathLastString (string path)
@@ -55,7 +55,7 @@ namespace SugyeongKim.Util
             return $"<color={hexColorStr}>{str}</color>";
         }
 
-        //==========================================================//
+        //============================================//
 
     }
 }

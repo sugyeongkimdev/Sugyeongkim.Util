@@ -8,7 +8,7 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
 {
     public CanvasGroup transitionCanvasGroup;
 
-    //==========================================================//
+    //============================================//
     public enum TransitionType { Straight, Fade }
     private static SerialDisposable serialDisposable = new SerialDisposable ();
 
@@ -19,7 +19,7 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
         return base.InitAsObservable ();
     }
 
-    //==========================================================//
+    //============================================//
 
     // 전환 실행
     public static void Transition (TransitionType transitionType, Action transitionAction, Action callback = null)
@@ -46,7 +46,7 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
         transitionCanvasGroup.alpha = 0f;
     }
 
-    //==========================================================//
+    //============================================//
     // Straight, 곧바로
     private IObservable<Unit> StraightAsObservable (Action transitionAction)
     {
@@ -69,7 +69,7 @@ public class TransitionManager : GlobalSingleton<TransitionManager>
         return Observable.ReturnUnit ();
     }
 
-    //==========================================================//
+    //============================================//
     // Fade, 점진적
     private IObservable<Unit> FadeAnimationAsObservable (Action transitionAction)
     {

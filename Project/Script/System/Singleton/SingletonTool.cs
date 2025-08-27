@@ -13,12 +13,12 @@ namespace SugyeongKim.Util
         // 글로벌 싱글톤 초기화 완료 이벤트
         public static BehaviorSubject<bool> OnCompleteSingletonInitSubject = new BehaviorSubject<bool>(false);
 
-        //==========================================================//
+        //============================================//
 
         private static Type GlobalType = typeof (GlobalSingleton<>);
         //private static Type LocalType = typeof (LocalSingleton<>);
 
-        //==========================================================//
+        //============================================//
 
         // 싱글톤의 부모 트랜스폼
         private static GameObject _rootGo;
@@ -43,7 +43,7 @@ namespace SugyeongKim.Util
             }
         }
 
-        //==========================================================//
+        //============================================//
 
         // 초기화 진행
         private static bool isInit = false;
@@ -89,7 +89,7 @@ namespace SugyeongKim.Util
             return Observable.ReturnUnit ();
         }
 
-        //==========================================================//
+        //============================================//
 
         // 글로벌 싱글톤을 상속받는 모든 클래스의 instnace 반환
         private static IEnumerable<object> GetGlobalSingletonInstnaceArr ()
@@ -151,7 +151,7 @@ namespace SugyeongKim.Util
             return findTypeArr;
         }
 
-        //==========================================================//
+        //============================================//
 
         // https://www.codeproject.com/Articles/696524/Accessing-Private-Fields-in-Inherited-Classes
         // 부모까지 거슬러 올라가면서 property를 이름으로 찾기

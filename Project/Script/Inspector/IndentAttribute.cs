@@ -19,7 +19,7 @@ namespace SugyeongKim.Util
         }
     }
 
-    //==========================================================//
+    //============================================//
 
     // 이름 재정의, 리치텍스트 지원 (※ 배열에 사용하면 의도대로 안됨)
     public class FieldNameAttribute : PropertyAttribute
@@ -31,7 +31,7 @@ namespace SugyeongKim.Util
         }
     }
 
-    //==========================================================//
+    //============================================//
     // 헤더 빠른 설정 (※ 배열에 사용하면 의도대로 안됨)
     public enum HeaderType { Title, Sub, List }
     public class HeaderCustomAttribute : PropertyAttribute
