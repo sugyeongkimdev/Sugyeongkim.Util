@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SugyeongKim.Util
 {
@@ -28,7 +29,7 @@ namespace SugyeongKim.Util
             {
                 if (_rootGo == false)
                 {
-                    var parent = GameObject.FindObjectOfType<GlobalSingletonParent> ();
+                    var parent = Object.FindAnyObjectByType<GlobalSingletonParent> ();
                     if (parent)
                     {
                         _rootGo = parent.gameObject;
