@@ -5,6 +5,7 @@
         "UniRx",
         "UniTask",
         "UniTask.Addressables",
+        "Unity.InputSystem",
         "Unity.Addressables",
         "Unity.ResourceManager"
     ],

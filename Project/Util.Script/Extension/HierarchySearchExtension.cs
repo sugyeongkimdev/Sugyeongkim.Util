@@ -19,7 +19,7 @@ public static class HierarchySearchExtension
         {
             if (alert)
             {
-                UtilLog.Error ($"Search fail : (\"{target}\") {path}");
+                DEBUG.Error ($"Search fail : (\"{target}\") {path}");
             }
             return null;
         }
@@ -27,7 +27,7 @@ public static class HierarchySearchExtension
         {
             if (alert)
             {
-                UtilLog.Error ($"GetComponent fail : (\"{target}\") {path}");
+                DEBUG.Error ($"GetComponent fail : (\"{target}\") {path}");
             }
             return null;
         }

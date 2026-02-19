@@ -61,7 +61,7 @@ namespace SugyeongKim.Util
             var operation = SceneManager.LoadSceneAsync (sceneName, mode);
             if (operation == null)
             {
-                UtilLog.Error ($"invalid sceneName : {sceneName}");
+                DEBUG.Error ($"invalid sceneName : {sceneName}");
                 return Observable.Return<AsyncOperation> (default);
             }
 
@@ -80,7 +80,7 @@ namespace SugyeongKim.Util
             var operation = SceneManager.UnloadSceneAsync (sceneName);
             if (operation == null)
             {
-                UtilLog.Error ($"invalid sceneName : {sceneName}");
+                DEBUG.Error ($"invalid sceneName : {sceneName}");
                 return Observable.ReturnUnit ();
             }
 

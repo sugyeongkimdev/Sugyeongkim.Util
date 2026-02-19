@@ -33,10 +33,10 @@ namespace SugyeongKim.Util
             _cachedBool = IsValid ();
             if (_cachedBool == false)
             {
-                var findAll = FindObjectsOfType<T> (true);
+                var findAll = FindObjectsByType<T> (FindObjectsInactive.Include, FindObjectsSortMode.None);
                 if(findAll.Length > 1)
                 {
-                    UtilLog.Error ($"Many Same Global Sington Type : {typeof(T)} [{findAll.Length}]");
+                    DEBUG.Error ($"Many Same Global Sington Type : {typeof(T)} [{findAll.Length}]");
                 }
                 _instance = findAll.FirstOrDefault();
             }

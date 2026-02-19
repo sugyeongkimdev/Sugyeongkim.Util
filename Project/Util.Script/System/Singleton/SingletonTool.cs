@@ -36,9 +36,19 @@ namespace SugyeongKim.Util
                     }
                     else
                     {
+                        if(Application.isPlaying == false)
+                        {
+                            // 에디터 모드에서는 Gameobject를 생성하면 안됨
+                            DEBUG.Error($"Cannot create GlobalSingletonParent in Edit mode.");
+                            return null;
+                        }
                         _rootGo = new GameObject ($"__{nameof(GlobalSingletonParent)}__");
                     }
-                    MonoBehaviour.DontDestroyOnLoad (_rootGo);
+
+                    if (Application.isPlaying)
+                    {
+                        MonoBehaviour.DontDestroyOnLoad (_rootGo);
+                    }
                 }
                 return _rootGo.transform;
             }

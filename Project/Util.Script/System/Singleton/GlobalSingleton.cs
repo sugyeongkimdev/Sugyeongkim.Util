@@ -22,7 +22,14 @@ namespace SugyeongKim.Util
             {
                 if (FindCachedInstance () == false)
                 {
-                    UtilLog.Log ($"Create Global Singleton : {typeof (T)}");
+                    if(Application.isPlaying == false)
+                    {
+                        // 에디터 모드에서는 Gameobject를 생성하면 안됨
+                        DEBUG.Error($"Cannot create GlobalSingleton<{typeof(T)}> in Edit mode.");
+                        return null;
+                    }
+
+                    DEBUG.Log ($"Create Global Singleton : {typeof (T)}");
 
                     // 캐시를 찾을 수 없음, 생성함
                     var singleton = new GameObject ($"{typeof (T)}");

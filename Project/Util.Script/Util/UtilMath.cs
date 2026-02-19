@@ -42,7 +42,7 @@ namespace SugyeongKim.Util
         {
             if (min > max)
             {
-                UtilLog.Error ($"min is bigger than max (min:{min}, max:{max}");
+                DEBUG.Error ($"min is bigger than max (min:{min}, max:{max}");
                 return min;
             }
             double range = (double)max - (double)min;

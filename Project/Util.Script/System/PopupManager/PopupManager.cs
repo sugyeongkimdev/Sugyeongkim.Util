@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SugyeongKim.Util
 {
@@ -24,7 +24,11 @@ namespace SugyeongKim.Util
             updateDisposable = this.UpdateAsObservable ()
                 .Where (_ => EnableBackspaceClose_Global)
                 // 뒤로가기 클릭
+#if ENABLE_INPUT_SYSTEM
+                .Where (_ => Keyboard.current.escapeKey.wasPressedThisFrame && popupDic.Any ())
+#elif ENABLE_LEGACY_INPUT_MANAGER
                 .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupDic.Any ())
+#endif
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
                 .Where (_ => popupDic.LastValue.EnableBackspaceClose_Local)
                 // 뒤로가기로 팝업이 닫힌 경우, 닫기 사운드 실행
@@ -58,7 +62,7 @@ namespace SugyeongKim.Util
                 if (ignoreAlert == false)
                 {
                     // 이미 존재하는 팝업인 경우, 기존 팝업을 닫고 새로 생성된 팝업을 추가
-                    UtilLog.Error ($"AddPopup : {popup.GetType ()} is already in PopupManager");
+                    DEBUG.Error ($"AddPopup : {popup.GetType ()} is already in PopupManager");
                 }
             }
         }
@@ -111,14 +115,14 @@ namespace SugyeongKim.Util
             if (IsCreatingPopup)
             {
                 // 팝업 생성중에 닫기 시도한 경우
-                UtilLog.Error ($"TryClosePopup : {popup.GetType ()} is creating popup");
+                DEBUG.Error ($"TryClosePopup : {popup.GetType ()} is creating popup");
                 return false;
             }
 
             if (popupDic.ContainsKey (popup.GetType()) == false)
             {
                 // 팝업매니저에 없던 팝업임
-                UtilLog.Error ($"TryClosePopup : {popup.GetType ()} is not in PopupManager");
+                DEBUG.Error ($"TryClosePopup : {popup.GetType ()} is not in PopupManager");
             }
             else
             {

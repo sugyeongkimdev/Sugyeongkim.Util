@@ -59,7 +59,7 @@ public class SoundManager : GlobalSingleton<SoundManager>
             AudioClip clip = Resources.Load<AudioClip> (soundPath);
             if (clip == null)
             {
-                UtilLog.Error ($"invalid sound path : {soundPath}");
+                DEBUG.Error ($"invalid sound path : {soundPath}");
             }
             else
             {
@@ -75,7 +75,7 @@ public class SoundManager : GlobalSingleton<SoundManager>
     {
         if (sfxType == SFXType.None)
         {
-            UtilLog.Error("invalid");
+            DEBUG.Error("invalid");
             return;
         }
         if (sfxSoundCache.TryGetValue (sfxType, out AudioClip clip))

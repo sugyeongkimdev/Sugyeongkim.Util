@@ -5,7 +5,9 @@ using UniRx;
 // Bootstrap 구현
 public class BootstrapScene : BootstrapBase
 {
-    public override string NextSceneName => "IntroScene";
+    public override string NextSceneName => "MainScene";
+
+    public override string BootstrapSceneName => "BootstrapScene";
 
     private void Start ()
     {
