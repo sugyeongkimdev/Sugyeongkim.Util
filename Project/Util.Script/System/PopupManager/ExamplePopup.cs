@@ -67,14 +67,14 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        public override IObservable<Unit> OnShowAsObservable ()
+        public override IObservable<Unit> OnOpenAsObservable ()
         {
             // -init popup action
             // -show popup action
             Debug.Log (setting.setData1);
             Debug.Log (setting.setData2);
             Debug.Log (setting.setData3);
-            return base.OnShowAsObservable ();
+            return base.OnOpenAsObservable ();
         }
         public override IObservable<Result> OnCloseAsObservable ()
         {

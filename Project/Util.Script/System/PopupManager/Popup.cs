@@ -25,7 +25,7 @@ namespace SugyeongKim.Util
         public virtual IObservable<Unit> ShowAsObservable ()
         {
             return Observable.ReturnUnit ()
-                .SelectMany (_ => OnShowAsObservable ())
+                .SelectMany (_ => OnOpenAsObservable ())
                 .SelectMany (_ => OnCloseAsObservable ());
         }
 
@@ -46,13 +46,27 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        public virtual IObservable<Unit> OnShowAsObservable ()
+        public virtual void OnOpen ()
         {
-            return Observable.ReturnUnit ();
+        }
+        public virtual void OnClose ()
+        {
+        }
+        public virtual IObservable<Unit> OnOpenAsObservable ()
+        {
+            return Observable.ReturnUnit ()
+                .Do (_ =>
+                {
+                    OnOpen ();
+                });
         }
         public virtual IObservable<Unit> OnCloseAsObservable ()
         {
-            return onCloseSubject;
+            return onCloseSubject
+                .Do (_ =>
+                {
+                    OnClose ();
+                });
         }
     }
 
@@ -68,11 +82,11 @@ namespace SugyeongKim.Util
 
         //============================================//
 
-        // 팝업 열릴시 unirx 이벤트 처리
+        // 팝업이 열리고 닫힐때까지 메세지를 보류함
         public virtual new IObservable<Result> ShowAsObservable ()
         {
             return Observable.ReturnUnit ()
-                .SelectMany (_ => OnShowAsObservable ())
+                .SelectMany (_ => OnOpenAsObservable ())
                 .SelectMany (_ => OnCloseAsObservable ());
         }
 
@@ -94,10 +108,28 @@ namespace SugyeongKim.Util
 
         //============================================//
 
+        public override void OnOpen ()
+        {
+        }
+        public override void OnClose ()
+        {
+        }
+        public override IObservable<Unit> OnOpenAsObservable ()
+        {
+            return Observable.ReturnUnit ()
+                .Do (_ =>
+                {
+                    OnOpen ();
+                });
+        }
         // 팝업 닫힐시 unirx 이벤트 처리
         public virtual new IObservable<Result> OnCloseAsObservable ()
         {
-            return resultSubject;
+            return resultSubject
+                .Do (_ =>
+                {
+                    OnClose ();
+                });
         }
     }
 
