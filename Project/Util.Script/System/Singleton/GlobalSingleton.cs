@@ -7,7 +7,7 @@ namespace SugyeongKim.Util
     // 게임 전역에서 사용되는 싱글톤, 찾고 없으면 만들어서 제공
     public abstract class GlobalSingleton<T> : LocalSingleton<T>, IGlobalSingletonInit where T : GlobalSingleton<T>
     {
-        public static string instanceName => nameof (instance);
+        //public static string instanceName => nameof (instance);
 
         //============================================//
 

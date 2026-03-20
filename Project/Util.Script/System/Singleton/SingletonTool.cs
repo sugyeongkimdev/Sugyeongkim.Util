@@ -116,7 +116,8 @@ namespace SugyeongKim.Util
                 })
                 .Select (currentType =>
                 {
-                    var name = GlobalSingleton<BootstrapBase>.instanceName;
+                    //var name = GlobalSingleton<BootstrapBase>.instanceName;
+                    var name = "instance";
 
                     // local 찾기
                     if (TryFindProperty (currentType, null, name, instanceFlag, out object instance))

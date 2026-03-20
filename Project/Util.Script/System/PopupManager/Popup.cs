@@ -6,8 +6,8 @@ namespace SugyeongKim.Util
 {
     public abstract class Popup : MonoBehaviour
     {
-        public class BaseSetting { }
-        public class BaseResult
+        public class PopupSetting { }
+        public class PopupResult
         {
             public bool isOkClick;
         }
@@ -17,19 +17,42 @@ namespace SugyeongKim.Util
         // 해당 팝업이 뒤로가기로 팝업을 닫을 수 있는지 여부
         public bool EnableBackspaceClose_Local { get; set; } = true;
 
+        protected Subject<Unit> onCloseSubject = new Subject<Unit> ();
+
         //============================================//
 
-        // 팝업 닫기 (unirx)
-        public virtual IObservable<Unit> CloseAsObservable ()
+        // 팝업이 열리고 닫힐때까지 메세지를 보류함
+        public virtual IObservable<Unit> ShowAsObservable ()
         {
-            PopupManager.TryClosePopup (this);
-            return Observable.ReturnUnit ();
+            return Observable.ReturnUnit ()
+                .SelectMany (_ => OnShowAsObservable ())
+                .SelectMany (_ => OnCloseAsObservable ());
         }
 
         // 팝업 닫기
         public virtual void Close ()
         {
-            CloseAsObservable ().Subscribe ().AddTo (this);
+            if (PopupManager.TryClosePopup (this))
+            {
+                onCloseSubject.OnNext (Unit.Default);
+                onCloseSubject.OnCompleted ();
+            }
+        }
+
+        public virtual void Relase ()
+        {
+            onCloseSubject.Dispose ();
+        }
+
+        //============================================//
+
+        public virtual IObservable<Unit> OnShowAsObservable ()
+        {
+            return Observable.ReturnUnit ();
+        }
+        public virtual IObservable<Unit> OnCloseAsObservable ()
+        {
+            return onCloseSubject;
         }
     }
 
@@ -39,50 +62,40 @@ namespace SugyeongKim.Util
     {
         // 팝업 닫힐시 결과값
         protected Result result = new Result ();
+
         // 팝업 닫힐시 결과값 unirx 이벤트 처리
         protected Subject<Result> resultSubject = new Subject<Result> ();
 
         //============================================//
 
-        // 팝업 열기 (unirx), 열리고 닫힐때까지 메세지를 보류함
-        public virtual IObservable<Result> ShowAsObservable ()
+        // 팝업 열릴시 unirx 이벤트 처리
+        public virtual new IObservable<Result> ShowAsObservable ()
         {
             return Observable.ReturnUnit ()
                 .SelectMany (_ => OnShowAsObservable ())
                 .SelectMany (_ => OnCloseAsObservable ());
         }
 
-        //============================================//
-
-        // 팝업 닫기 (unirx)
-        public override IObservable<Unit> CloseAsObservable ()
+        public override void Close ()
         {
-            return Observable.ReturnUnit ()
-                .Do (_ =>
-                {
-                    // 팝업 삭제 시도
-                    if (PopupManager.TryClosePopup (this))
-                    {
-                        // 결과 반환
-                        if (resultSubject.HasObservers)
-                        {
-                            resultSubject.OnNext (result);
-                            resultSubject.OnCompleted ();
-                            resultSubject.Dispose ();
-                        }
-                    }
-                });
+            if (PopupManager.TryClosePopup (this))
+            {
+                onCloseSubject.OnNext (Unit.Default);
+                resultSubject.OnNext (result);
+                onCloseSubject.OnCompleted ();
+                resultSubject.OnCompleted ();
+            }
+        }
+        public override void Relase ()
+        {
+            onCloseSubject.Dispose ();
+            resultSubject.Dispose ();
         }
 
         //============================================//
 
-        // 팝업 열릴시 unirx 이벤트 처리
-        public virtual IObservable<Unit> OnShowAsObservable ()
-        {
-            return Observable.ReturnUnit ();
-        }
         // 팝업 닫힐시 unirx 이벤트 처리
-        public virtual IObservable<Result> OnCloseAsObservable ()
+        public virtual new IObservable<Result> OnCloseAsObservable ()
         {
             return resultSubject;
         }

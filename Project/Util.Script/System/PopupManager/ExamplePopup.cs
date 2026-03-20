@@ -28,27 +28,41 @@ namespace SugyeongKim.Util
                 Debug.Log (result.restunData3);
             });
         }
+
+        // Popup<Result, Setting> 상속
         public static IObservable<ExamplePopup.Result> ShowPopupExampleAsObservable (ExamplePopup.Setting setting)
         {
             return PopupManager.GetPopupAsObservable<ExamplePopup> ("PopupExampleAddressPath")
                 .Do (popup => popup.SetData (setting))
                 .SelectMany (popup => popup.ShowAsObservable ());
         }
+        // Popup<Result> 상속
+        //public static IObservable<ExamplePopup.Result> ShowPopupExampleAsObservable ()
+        //{
+        //    return PopupManager.GetPopupAsObservable<ExamplePopup> ("PopupExampleAddressPath")
+        //        .SelectMany (popup => popup.ShowAsObservable ());
+        //}
+        // Popup 상속
+        //public static IObservable<Unit> Show ()
+        //{
+        //    return PopupManager.GetPopupAsObservable<ExamplePopup> ("PopupExampleAddressPath")
+        //        .SelectMany (popup => popup.ShowAsObservable ());
+        //}
+
 
         //============================================//
 
-        public class Setting
+        public class Setting : PopupSetting
         {
             public string setData1;
             public string setData2;
             public string setData3;
         }
-        public class Result
+        public class Result : PopupResult
         {
             public string restunData1;
             public string restunData2;
             public string restunData3;
-            public bool isOkClick;
         }
 
         //============================================//

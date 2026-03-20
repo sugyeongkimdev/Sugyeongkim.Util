@@ -34,7 +34,12 @@ namespace SugyeongKim.Util
                 // 뒤로가기로 팝업이 닫힌 경우, 닫기 사운드 실행
                 .Do (_ => SoundManager.PlaySFX (SFXType.PopupClose))
                 // 닫기
-                .SelectMany (_ => popupDic.LastValue.CloseAsObservable ())
+                .Select (_ => popupDic.LastValue)
+                .SelectMany (popup => popup
+                    .OnCloseAsObservable ()
+                    .DoOnSubscribe (() => { popup.Close (); })
+                    .Select (_ => popup))
+                .Do (popup => { popup.Relase (); })
                 .Subscribe ()
                 .AddTo (this);
 
@@ -46,18 +51,23 @@ namespace SugyeongKim.Util
         // 팝업 매니저에 추가
         public static void AddPopup (Popup popup, bool ignoreAlert = false)
         {
-            popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
-            if(popup.transform is RectTransform rectTrans)
+            if (popup == null)
             {
-                rectTrans.localScale = Vector3.one;         // 팝업의 스케일을 초기화
-                rectTrans.anchoredPosition= Vector2.zero;   // 위치 초기화
+                DEBUG.Error ("popup is null");
+                return;
+            }
+            popup.transform.SetParent (GlobalCanvasUIManager.instance.PopupLayer);
+            if (popup.transform is RectTransform rectTrans)
+            {
+                //rectTrans.localScale = Vector3.one;         // 팝업의 스케일을 초기화
+                //rectTrans.anchoredPosition= Vector2.zero;   // 위치 초기화
                 //rectTrans.anchorMin = Vector2.zero;         // 앵커 최소값 초기화
                 //rectTrans.anchorMax = Vector2.one;          // 앵커 최대값 초기화
-                rectTrans.offsetMin = Vector2.zero;
-                rectTrans.offsetMax = Vector2.zero;
-                rectTrans.pivot = new Vector2(0.5f, 0.5f);  // 피벗을 중앙으로 설정
+                //rectTrans.offsetMin = Vector2.zero;
+                //rectTrans.offsetMax = Vector2.zero;
+                rectTrans.pivot = new Vector2 (0.5f, 0.5f);  // 피벗을 중앙으로 설정
             }
-            if (popupDic.TryAdd (popup.GetType(), popup) == false)
+            if (popupDic.TryAdd (popup.GetType (), popup) == false)
             {
                 if (ignoreAlert == false)
                 {
@@ -68,17 +78,18 @@ namespace SugyeongKim.Util
         }
 
         // 팝업 가져오기
-        public static IObservable<Popup> GetPopupAsObservable<Popup> (string popupAddressPath) where Popup : Util.Popup
+        public static IObservable<popup> GetPopupAsObservable<popup> (string popupAddressPath) where popup : Popup
         {
-            if (popupDic.TryGetValue (typeof(Popup), out var popup))
+            if (popupDic.TryGetValue (typeof (popup), out var popupInst))
             {
                 // 팝업이 이미 존재하는 경우, 팝업을 반환
-                return Observable.Return (popup as Popup);
+                return Observable.Return (popupInst as popup);
             }
             else
             {
+                var t = typeof (popup);
                 // 팝업이 없을 경우, 팝업을 생성하고 팝업 매니저에 추가
-                return CreatePopupAsObservable<Popup> (popupAddressPath)
+                return CreatePopupAsObservable<popup> (popupAddressPath)
                     .Do (popup =>
                     {
                         AddPopup (popup);
@@ -119,14 +130,14 @@ namespace SugyeongKim.Util
                 return false;
             }
 
-            if (popupDic.ContainsKey (popup.GetType()) == false)
+            if (popupDic.ContainsKey (popup.GetType ()) == false)
             {
                 // 팝업매니저에 없던 팝업임
                 DEBUG.Error ($"TryClosePopup : {popup.GetType ()} is not in PopupManager");
             }
             else
             {
-                popupDic.Remove (popup.GetType());
+                popupDic.Remove (popup.GetType ());
             }
 
             // 내부필드 해제

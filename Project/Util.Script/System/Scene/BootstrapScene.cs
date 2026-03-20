@@ -3,15 +3,15 @@ using System;
 using UniRx;
 
 // Bootstrap 구현
-public class BootstrapScene : BootstrapBase
+public class BootstrapScene : BootstrapBase<BootstrapScene>
 {
-    public override string NextSceneName => "MainScene";
+    public string NextSceneName => "MainScene";
 
-    public override string BootstrapSceneName => "BootstrapScene";
+    public static string BootstrapSceneName => "BootstrapScene";
 
     private void Start ()
     {
-        BootstrapAsObservable ()
+        BootstrapAsObservable (BootstrapSceneName)
             .Where (isMoveNext => isMoveNext)
             // Bootstarb scene -> Next Scene
             .SelectMany (_ => SceneControlManager.LoadSceneAsObservable (
@@ -26,6 +26,6 @@ public class BootstrapScene : BootstrapBase
 
     protected override IObservable<Unit> OnBootstrapAsObservable ()
     {
-        return base.OnBootstrapAsObservable();
+        return base.OnBootstrapAsObservable ();
     }
 }

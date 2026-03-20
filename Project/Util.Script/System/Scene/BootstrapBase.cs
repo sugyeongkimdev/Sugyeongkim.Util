@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace SugyeongKim.Util
 {
-    public abstract class BootstrapBase : GlobalSingleton<BootstrapBase>
+    public abstract class BootstrapBase<T> : GlobalSingleton<T> where T : BootstrapBase<T>
     {
         /*
         public class ExampleScene : MonoBehaviour
@@ -25,18 +25,14 @@ namespace SugyeongKim.Util
 
         // 부트스트랩 씬 이름
         //public abstract string BootstrapSceneName => "util.bootstrap";
-        public abstract string BootstrapSceneName { get; }
-
-        // 부트스트랩이 끝난 뒤 이동할 씬 이름
-        public abstract string NextSceneName { get; }
-
+        //public abstract string BootstrapSceneName { get; }
 
         //============================================//
 
         // 프로그램 최초 실행시 어느씬이든 초기화 가능하도록 초기화를 모아둠, scene 최초 진입시 실행하면 됨
         // bootstrap을 통하지 않고도 실행할 가능하도록 하기 위한 목적
         private static bool isInit = false;
-        public IObservable<bool> BootstrapAsObservable ()
+        public static IObservable<bool> BootstrapAsObservable (string bootstrapSceneName)
         {
             if (isInit)
             {
@@ -52,13 +48,13 @@ namespace SugyeongKim.Util
                 .SelectMany (_ =>
                 {
                     // 부트스트랩이 이미 있으면 무시
-                    if (BootstrapBase.IsValid () || BootstrapBase.FindCachedInstance ())
+                    if (IsValid () || FindCachedInstance ())
                     {
-                        SceneControlManager.CurrentSceneName = BootstrapSceneName;
+                        SceneControlManager.CurrentSceneName = bootstrapSceneName;
                         return Observable.ReturnUnit ();
                     }
                     // 부트스트랩 씬 로드
-                    return SceneControlManager.LoadSceneAsObservable (BootstrapSceneName);
+                    return SceneControlManager.LoadSceneAsObservable (bootstrapSceneName);
                 })
 
                 // bootstrap Init
@@ -72,7 +68,7 @@ namespace SugyeongKim.Util
                 {
                     if (SceneManager.sceneCount > 1)
                     {
-                        return SceneControlManager.UnloadSceneAsObservable (BootstrapSceneName);
+                        return SceneControlManager.UnloadSceneAsObservable (bootstrapSceneName);
                     }
                     return Observable.ReturnUnit ();
                 })
