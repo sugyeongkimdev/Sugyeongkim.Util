@@ -30,7 +30,7 @@ namespace SugyeongKim.Util
                 .Where (_ => Input.GetKeyDown (KeyCode.Escape) && popupDic.Any ())
 #endif
                 // 뒤로가기로 해당 팝업이 닫을 수 있는지 체크
-                .Where (_ => popupDic.LastValue.EnableBackspaceClose_Local)
+                .Where (_ => popupDic.LastValue.IsEnableBackspaceClose_Local)
                 // 뒤로가기로 팝업이 닫힌 경우, 닫기 사운드 실행
                 .Do (_ => SoundManager.PlaySFX (SFXType.PopupClose))
                 // 닫기

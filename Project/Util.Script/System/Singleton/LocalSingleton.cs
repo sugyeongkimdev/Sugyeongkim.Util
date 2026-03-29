@@ -16,7 +16,12 @@ namespace SugyeongKim.Util
         {
             get
             {
-                return FindCachedInstance ();
+                var findInstance = FindCachedInstance ();
+                if (findInstance == null)
+                {
+                    DEBUG.Error ($"invalid instance : {typeof(T)}");
+                }
+                return findInstance;
             }
         }
 

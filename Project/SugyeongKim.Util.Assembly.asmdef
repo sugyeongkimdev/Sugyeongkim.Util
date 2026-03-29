@@ -20,7 +20,7 @@
         {
             "name": "com.unity.addressables",
             "expression": "0.0.1",
-            "define": "USE_ADDESSABLE"
+            "define": "USE_ADDRESSABLE"
         }
     ],
     "noEngineReferences": false
